@@ -39,6 +39,10 @@ pushd device/sony/common
     git reset --hard sony/master
 popd
 
+pushd device/sony/sepolicy
+    git reset --hard sony/master
+popd
+
 pushd device/sony/yoshino
     git reset --hard sony/master
 popd
@@ -138,6 +142,16 @@ pushd device/sony/common
     
     # remove the no-op Android.bp
     git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
+
+    git fetch https://github.com/MarijnS95/device-sony-common
+    # common-packages: Include default thermal hw module.
+    git cherry-pick --no-edit 2ebad1b02a8f007510f5398b1f9041a17495978e
+popd
+
+pushd device/sony/sepolicy
+    git fetch https://github.com/MarijnS95/device-sony-sepolicy
+    # WIP: Copy hal_thermal_default from crosshatch.
+    git cherry-pick --no-edit 6327e77551a688701719aa5438f63e0121c296fd
 popd
 
 pushd device/sony/yoshino
