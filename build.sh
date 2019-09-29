@@ -316,12 +316,12 @@ cp $Q_CUSTOM/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.g
 . build/envsetup.sh
 lunch aosp_g8441-userdebug
 
-#pushd kernel/sony/$USED_MSM/common-kernel
-#    sed -i 's/PLATFORMS=.*/PLATFORMS=yoshino/1' build-kernels-clang.sh
-#    sed -i 's/YOSHINO=.*/YOSHINO=lilac/1' build-kernels-clang.sh
-#    find . -name "*dtb*" -exec rm "{}" \;
-#    ./build-kernels-clang.sh
-#popd
+pushd kernel/sony/$USED_MSM/common-kernel
+    sed -i 's/PLATFORMS=.*/PLATFORMS=yoshino/1' build-kernels-clang.sh
+    sed -i 's/YOSHINO=.*/YOSHINO=lilac/1' build-kernels-clang.sh
+    find . -name "*dtb*" -exec rm "{}" \;
+    ./build-kernels-clang.sh
+popd
 
 make clean
 make -j4
