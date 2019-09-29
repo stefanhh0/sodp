@@ -1,8 +1,15 @@
 #!/bin/bash
 set -e
 
-Q_CUSTOM=/home/stefan/android/q
-SOURCES=/home/stefan/android/source
+# ----------------------------------------------------------------------
+# Variables have to be adjusted accordingly
+# ----------------------------------------------------------------------
+SOURCE=~/android/source
+APK=~/android/q
+LUNCH_CHOICE=aosp_g8441-userdebug
+PLATFORM=yoshino
+DEVICE=lilac
+# ----------------------------------------------------------------------
 
 USED_MSM="msm-4.9"
 NOT_USED_MSM="msm-4.14"
@@ -20,7 +27,7 @@ pick_pr() {
     done
 }
 
-cd $SOURCES
+cd $SOURCE
 
 ANDROID_VERSION=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
@@ -119,7 +126,7 @@ pushd .repo/local_manifests
 EOF
 popd
 
-#./repo_update.sh
+./repo_update.sh
 
 if [ -d kernel/sony/$NOT_USED_MSM ]; then 
    rm -r kernel/sony/$NOT_USED_MSM
@@ -135,10 +142,6 @@ popd
 
 pushd device/sony/yoshino
     sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
-popd
-
-pushd kernel/sony/msm-4.9/kernel
-    pick_pr 2065 5
 popd
 
 # ----------------------------------------------------------------------
@@ -284,7 +287,7 @@ EOF
 
 # ----------------------------------------------------------------------
 # Copy required apks for android 10 from crosshatch not yet in opengapps
-# The apks can be eobtained from a pixel 10 image e.g. crosshatch from:
+# The apks can be obtained from a pixel 10 image e.g. crosshatch from:
 # https://developers.google.com/android/images
 # ----------------------------------------------------------------------
 # PackageInstaller
@@ -293,7 +296,7 @@ if [ -d vendor/opengapps/sources/all/priv-app/com.google.android.packageinstalle
     rm -r vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29
 fi
 mkdir -p vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29/nodpi
-cp $Q_CUSTOM/GooglePackageInstaller.apk vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29/nodpi/29.apk
+cp $APK/GooglePackageInstaller.apk vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29/nodpi/29.apk
 
 # ----------------------------------------------------------------------
 # PermissionController
@@ -302,7 +305,7 @@ if [ -d vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroll
     rm -r vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29
 fi
 mkdir -p vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi
-cp $Q_CUSTOM/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291601200.apk
+cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291601200.apk
 
 # ----------------------------------------------------------------------
 # SetupWizard
@@ -311,16 +314,17 @@ if [ -d vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.def
     rm -r vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29
 fi
 mkdir -p vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi
-cp $Q_CUSTOM/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2436.apk
+cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2436.apk
 
 . build/envsetup.sh
-lunch aosp_g8441-userdebug
+lunch $LUNCH_CHOICE
 
 pushd kernel/sony/$USED_MSM/common-kernel
-    sed -i 's/PLATFORMS=.*/PLATFORMS=yoshino/1' build-kernels-clang.sh
-    sed -i 's/YOSHINO=.*/YOSHINO=lilac/1' build-kernels-clang.sh
+    PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
+    sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
+    sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-gcc.sh
     find . -name "*dtb*" -exec rm "{}" \;
-    ./build-kernels-clang.sh
+    bash ./build-kernels-gcc.sh
 popd
 
 make clean
