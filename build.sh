@@ -300,9 +300,16 @@ WITH_DEXPREOPT := true
 EOF
 
 # ----------------------------------------------------------------------
-# Copy required apks for android 10 from crosshatch not yet in opengapps
-# The apks can be obtained from a pixel 10 image e.g. crosshatch from:
+# Copy required apks for android 10 that are not yet in opengapps.
+# The apks can be obtained from:
 # https://developers.google.com/android/images
+#
+# The apks used here are from:
+# crosshatch-qp1a.190711.020-factory-2eae0727.zip
+#
+# If using a different image, version numbers might be different and
+# have to be adjusted using the versionCode from the command:
+# aapt dump badging <name>.apk |grep versionCode
 # ----------------------------------------------------------------------
 # PackageInstaller
 # ----------------------------------------------------------------------
