@@ -55,6 +55,10 @@ pushd kernel/sony/msm-4.9/kernel
     git reset --hard sony/aosp/LE.UM.2.3.2.r1.4
 popd
 
+pushd kernel/sony/$USED_MSM/common-kernel
+    git reset --hard marijns95/aosp/LE.UM.2.3.2.r1.4
+popd
+
 if [ -d vendor/opengapps/sources/all ]; then
     pushd vendor/opengapps/sources/all
         git reset --hard gitlab/master
