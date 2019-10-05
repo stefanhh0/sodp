@@ -11,16 +11,13 @@ PLATFORM=yoshino
 DEVICE=lilac
 # ----------------------------------------------------------------------
 
-USED_MSM="msm-4.9"
-NOT_USED_MSM="msm-4.14"
-
 pick_pr() {
     local PR_ID=$1
     local COMMITS=$2
     local INDEX=$(($COMMITS - 1))
-    
+
     git fetch sony pull/$PR_ID/head
-    
+
     while [ $INDEX -ge 0 ]; do
         git cherry-pick -Xtheirs --no-edit FETCH_HEAD~$INDEX
         INDEX=$(($INDEX - 1))
@@ -31,8 +28,8 @@ cd $SOURCE
 
 ANDROID_VERSION=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
-if [ -d kernel/sony/$NOT_USED_MSM ]; then 
-   rm -r kernel/sony/$NOT_USED_MSM
+if [ -d kernel/sony/msm-4.14 ]; then
+   rm -r kernel/sony/msm-4.14
 fi
 
 pushd device/sony/common
@@ -51,13 +48,17 @@ pushd vendor/oss/transpower
     git reset --hard sony/master
 popd
 
-pushd kernel/sony/msm-4.9/kernel
-    git reset --hard sony/aosp/LE.UM.2.3.2.r1.4
-popd
+if [ -d kernel/sony/msm-4.9/kernel ]; then
+    pushd kernel/sony/msm-4.9/kernel
+        git reset --hard sony/aosp/LE.UM.2.3.2.r1.4
+    popd
+fi
 
-pushd kernel/sony/$USED_MSM/common-kernel
-    git reset --hard marijns95/aosp/LE.UM.2.3.2.r1.4
-popd
+if [ -d kernel/sony/msm-4.9/common-kernel ]; then
+    pushd kernel/sony/msm-4.9/common-kernel
+        git reset --hard marijns95/aosp/LE.UM.2.3.2.r1.4
+    popd
+fi
 
 if [ -d vendor/opengapps/sources/all ]; then
     pushd vendor/opengapps/sources/all
@@ -81,9 +82,9 @@ index 18983252..134ba366 100644
 --- a/default.xml
 +++ b/default.xml
 @@ -768,4 +768,14 @@
- 
+
    <repo-hooks in-project="platform/tools/repohooks" enabled-list="pre-upload" />
- 
+
 +  <remote name="opengapps" fetch="https://github.com/MarijnS95/"  />
 +  <remote name="gitlab" fetch="https://gitlab.opengapps.org/opengapps/"  />
 +
@@ -111,7 +112,7 @@ pushd .repo/local_manifests
 
     # add display-commonsys-intf git
     git revert --no-edit 52af0a25c9d863179068d912ff1e231639f8de43
-    
+
     # switch display to aosp/LA.UM.7.1.r1
     git revert -Xtheirs --no-edit 91c8fe586475535c5d64acd35bde8e92468b9dc8
 
@@ -130,20 +131,20 @@ pushd .repo/local_manifests
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/fw-api" name="vendor-qcom-opensource-wlan-fw-api" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/qca-wifi-host-cmn" name="vendor-qcom-opensource-wlan-qca-wifi-host-cmn" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/qcacld-3.0" name="vendor-qcom-opensource-wlan-qcacld-3.0" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
-</manifest>    
+</manifest>
 EOF
 popd
 
 ./repo_update.sh
 
-if [ -d kernel/sony/$NOT_USED_MSM ]; then 
-   rm -r kernel/sony/$NOT_USED_MSM
+if [ -d kernel/sony/msm-4.14 ]; then
+   rm -r kernel/sony/msm-4.14
 fi
 
 pushd device/sony/common
     sed -i 's/TARGET_VENDOR_VERSION := .*/TARGET_VENDOR_VERSION := v9/1' common-odm.mk
     sed -i 's/QCOM_NEW_MEDIA_PLATFORM := .*/QCOM_NEW_MEDIA_PLATFORM := sdm845 sm8150/1' hardware/qcom/Android.mk
-    
+
     # remove the no-op Android.bp
     git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
 
@@ -225,7 +226,7 @@ index 0b46f07..2d2e5cd 100644
 @@ -437,14 +444,25 @@ It allows additional grants on top of privapp-permissions-platform.xml
          <permission name="android.permission.CHANGE_COMPONENT_ENABLED_STATE"/>
      </privapp-permissions>
- 
+
 +    <privapp-permissions package="com.google.android.permissioncontroller">
 +        <permission name="android.permission.MANAGE_USERS"/>
 +        <permission name="android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS"/>
@@ -249,7 +250,7 @@ index 0b46f07..2d2e5cd 100644
 +        <permission name="android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME"/>
 +        <permission name="android.permission.PACKAGE_USAGE_STATS"/>
      </privapp-permissions>
- 
+
      <privapp-permissions package="com.google.android.partnersetup">
 @@ -488,11 +506,12 @@ It allows additional grants on top of privapp-permissions-platform.xml
          <permission name="android.permission.PERFORM_CDMA_PROVISIONING"/>
@@ -267,7 +268,7 @@ index 0b46f07..2d2e5cd 100644
      </privapp-permissions>
 @@ -576,10 +595,14 @@ It allows additional grants on top of privapp-permissions-platform.xml
      </privapp-permissions>
- 
+
      <privapp-permissions package="com.google.android.apps.wellbeing">
 +        <permission name="android.permission.ACCESS_INSTANT_APPS"/>
 +        <permission name="android.permission.CONTROL_DISPLAY_COLOR_TRANSFORMS"/>
@@ -344,7 +345,7 @@ cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google
 . build/envsetup.sh
 lunch $LUNCH_CHOICE
 
-pushd kernel/sony/$USED_MSM/common-kernel
+pushd kernel/sony/msm-4.9/common-kernel
     PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
     sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
     sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-gcc.sh
