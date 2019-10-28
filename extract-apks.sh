@@ -5,11 +5,15 @@ set -e
 # Variables have to be adjusted accordingly
 # ----------------------------------------------------------------------
 APK=~/android/q
-IMAGE_NAME=crosshatch-qp1a.191005.007-factory-2989a08d.zip
-DOWNLOAD_DIR=~/android/crosshatch
+IMAGE_NAME=coral-qd1a.190821.011.c4-factory-6a29be3b.zip
+DOWNLOAD_DIR=~/android/coral
 # ----------------------------------------------------------------------
 
 IMAGE_FILE=$DOWNLOAD_DIR/$IMAGE_NAME
+
+if [ ! -d $DOWNLOAD_DIR ]; then
+    mkdir $DOWNLOAD_DIR
+fi
 
 if [ ! -f $IMAGE_FILE ]; then
     pushd $DOWNLOAD_DIR
