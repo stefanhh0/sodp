@@ -113,8 +113,33 @@ pushd .repo/local_manifests
     # add display-commonsys-intf git
     git revert --no-edit 52af0a25c9d863179068d912ff1e231639f8de43
 
-    # switch display to aosp/LA.UM.7.1.r1
-    git revert -Xtheirs --no-edit 91c8fe586475535c5d64acd35bde8e92468b9dc8
+    # revert switch display to aosp/LA.UM.7.1.r1
+    patch -p1 <<EOF
+diff --git a/qcom.xml b/qcom.xml
+index 27bc6b7..99d0487 100644
+--- a/qcom.xml
++++ b/qcom.xml
+@@ -9,9 +9,8 @@
+
+ <project path="hardware/qcom/gps" name="platform/hardware/qcom/sdm845/gps" remote="aosp" groups="qcom_sdm845" />
+
+-<project path="hardware/qcom/display/sde" name="hardware-qcom-display" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" />
+-<project path="hardware/qcom/media/sm8150" name="hardware-qcom-media" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" />
+
++<project path="hardware/qcom/display/sde" name="hardware-qcom-display" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
+ <project path="hardware/qcom/media/sdm845" name="platform/hardware/qcom/sdm845/media" groups="qcom_sdm845" remote="aosp" />
+
+ <project path="hardware/qcom/data/ipacfg-mgr/sdm845" name="platform/hardware/qcom/sdm845/data/ipacfg-mgr" groups="qcom_sdm845" remote="aosp" />
+@@ -21,7 +19,7 @@
+ <project path="vendor/qcom/opensource/dataservices" name="vendor-qcom-opensource-dataservices" groups="device" remote="sony" revision="master" />
+ <project path="vendor/qcom/opensource/location" name="vendor-qcom-opensource-location" groups="device" remote="sony" revision="p-mr0" />
+ <project path="vendor/qcom/opensource/wlan" name="hardware-qcom-wlan" groups="device" remote="sony" revision="master" />
+-<project path="vendor/qcom/opensource/interfaces" name="vendor-qcom-opensource-interfaces" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" >
++<project path="vendor/qcom/opensource/interfaces" name="vendor-qcom-opensource-interfaces" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" >
+   <linkfile dest="vendor/qcom/opensource/Android.bp" src="os_pickup.bp" />
+ </project>
+ </manifest>
+EOF
 
     # ----------------------------------------------------------------------
     # 4.9 kernel-repos
