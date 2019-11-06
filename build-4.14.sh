@@ -48,6 +48,12 @@ pushd vendor/oss/transpower
     git reset --hard sony/master
 popd
 
+if [ -d vendor/opengapps/sources/all ]; then
+    pushd vendor/opengapps/sources/all
+        git reset --hard gitlab/master
+    popd
+fi
+
 if [ -d hardware/qcom/sdm845 ]; then
     rm -r hardware/qcom/sdm845
 fi
@@ -93,13 +99,20 @@ index 18983252..134ba366 100644
 EOF
 popd
 
-if [ -d vendor/opengapps/sources/all ]; then
-    pushd vendor/opengapps/sources/all
-        git reset --hard gitlab/master
-    popd
-fi
-
 ./repo_update.sh
+
+pushd device/sony/common
+    git fetch https://github.com/MarijnS95/device-sony-common
+    # common-packages: Include default thermal hw module.
+    git cherry-pick --no-edit 2ebad1b02a8f007510f5398b1f9041a17495978e
+popd
+
+pushd device/sony/sepolicy
+    git fetch https://github.com/MarijnS95/device-sony-sepolicy
+    # WIP: Copy hal_thermal_default from crosshatch.
+    git cherry-pick --no-edit 6327e77551a688701719aa5438f63e0121c296fd
+popd
+
 
 # ----------------------------------------------------------------------
 # opengapps permissions-google
@@ -247,8 +260,7 @@ EOF
 # The apks can be obtained from:
 # https://developers.google.com/android/images
 #
-# The apks used here are from:
-# crosshatch-qp1a.190711.020-factory-2eae0727.zip
+# The apks used here are downloaded via extract-apks.sh
 #
 # If using a different image, version numbers might be different and
 # have to be adjusted using the versionCode from the command:
@@ -269,7 +281,7 @@ if [ -d vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroll
     rm -r vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29
 fi
 mkdir -p vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi
-cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291601200.apk
+cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291601500.apk
 
 # ----------------------------------------------------------------------
 # SetupWizard
@@ -278,7 +290,7 @@ if [ -d vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.def
     rm -r vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29
 fi
 mkdir -p vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi
-cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2436.apk
+cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2758.apk
 
 . build/envsetup.sh
 lunch $LUNCH_CHOICE

@@ -48,6 +48,12 @@ pushd vendor/oss/transpower
     git reset --hard sony/master
 popd
 
+if [ -d vendor/opengapps/sources/all ]; then
+    pushd vendor/opengapps/sources/all
+        git reset --hard gitlab/master
+    popd
+fi
+
 if [ -d kernel/sony/msm-4.9/kernel ]; then
     pushd kernel/sony/msm-4.9/kernel
         git reset --hard sony/aosp/LE.UM.2.3.2.r1.4
@@ -57,12 +63,6 @@ fi
 if [ -d kernel/sony/msm-4.9/common-kernel ]; then
     pushd kernel/sony/msm-4.9/common-kernel
         git reset --hard marijns95/aosp/LE.UM.2.3.2.r1.4
-    popd
-fi
-
-if [ -d vendor/opengapps/sources/all ]; then
-    pushd vendor/opengapps/sources/all
-        git reset --hard gitlab/master
     popd
 fi
 
