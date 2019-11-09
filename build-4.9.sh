@@ -48,6 +48,10 @@ pushd vendor/oss/transpower
     git reset --hard sony/master
 popd
 
+if [ -d device/sony/customization/ ]; then
+    rm -r device/sony/customization
+fi
+
 if [ -d vendor/opengapps/sources/all ]; then
     pushd vendor/opengapps/sources/all
         git reset --hard gitlab/master
@@ -312,9 +316,6 @@ popd
 # ----------------------------------------------------------------------
 # customization to build opengapps
 # ----------------------------------------------------------------------
-if [ -d device/sony/customization/ ]; then
-    rm -r device/sony/customization
-fi
 mkdir device/sony/customization
 cat >device/sony/customization/customization.mk <<EOF
 GAPPS_VARIANT := pico
@@ -369,6 +370,8 @@ cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google
 . build/envsetup.sh
 lunch $LUNCH_CHOICE
 
+make clean
+
 pushd kernel/sony/msm-4.9/common-kernel
     PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
     sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
@@ -377,5 +380,4 @@ pushd kernel/sony/msm-4.9/common-kernel
     bash ./build-kernels-gcc.sh
 popd
 
-make clean
 make -j4
