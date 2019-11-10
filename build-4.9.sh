@@ -193,6 +193,20 @@ pushd device/sony/yoshino
 popd
 
 # ----------------------------------------------------------------------
+# Pull opengapps large files that are stored in git lfs
+# ----------------------------------------------------------------------
+for path in \
+vendor/opengapps/sources/all \
+vendor/opengapps/sources/arm \
+vendor/opengapps/sources/arm64
+do
+    pushd $path
+        git lfs pull &
+    popd
+done
+wait
+
+# ----------------------------------------------------------------------
 # opengapps permissions-google
 # ----------------------------------------------------------------------
 pushd vendor/opengapps/sources/all

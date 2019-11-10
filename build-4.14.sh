@@ -117,6 +117,19 @@ pushd device/sony/sepolicy
     git cherry-pick --no-edit 6327e77551a688701719aa5438f63e0121c296fd
 popd
 
+# ----------------------------------------------------------------------
+# Pull opengapps large files that are stored in git lfs
+# ----------------------------------------------------------------------
+for path in \
+vendor/opengapps/sources/all \
+vendor/opengapps/sources/arm \
+vendor/opengapps/sources/arm64
+do
+    pushd $path
+        git lfs pull &
+    popd
+done
+wait
 
 # ----------------------------------------------------------------------
 # opengapps permissions-google
