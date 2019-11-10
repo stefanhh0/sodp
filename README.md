@@ -2,7 +2,7 @@
 
 Scripts that build aosp 10 for xperia devices using linux kernel 4.9 or 4.14 and including opengapps.
 
-Please be aware that these scripts are not appropriate for a developer aosp tree that contains 
+Please be aware that these scripts are not appropriate for a developer aosp tree that contains
 changes but should only be used on clean trees, since the script will do things like:
 - delete files
 - git hard resets
@@ -21,10 +21,12 @@ DEVICE=lilac
 ```
 
 For opengapps it is required to obtain three APKs manually and provide them in the APK folder.
-The apks can be obtained from a pixel 10 image e.g. from crosshatch: 
+The apks can be obtained from a pixel 10 image e.g. from coral:
 https://developers.google.com/android/images
 
 Following APKs are required:
 - `$APK/GooglePackageInstaller.apk`
 - `$APK/GooglePermissionControllerPrebuilt.apk`
 - `$APK/SetupWizardPrebuilt.apk`
+
+To download and extract those three APKs `extract-apks.sh` can be used.
