@@ -32,48 +32,46 @@ if [ -d kernel/sony/msm-4.9 ]; then
    rm -r kernel/sony/msm-4.9
 fi
 
-pushd device/sony/common
-    git reset --hard sony/master
-popd
-
-pushd device/sony/sepolicy
-    git reset --hard sony/master
-popd
-
-pushd device/sony/yoshino
-    git reset --hard sony/master
-popd
-
-pushd vendor/oss/transpower
-    git reset --hard sony/master
-popd
+for path in \
+device/sony/common \
+device/sony/sepolicy \
+device/sony/$PLATFORM \
+vendor/oss/transpower
+do
+    if [ -d $path ]; then
+        pushd $path
+            git clean -d -f
+            git reset --hard sony/master
+        popd
+    fi
+done
 
 if [ -d device/sony/customization/ ]; then
     rm -r device/sony/customization
 fi
 
-if [ -d vendor/opengapps/sources/all ]; then
-    pushd vendor/opengapps/sources/all
-        git reset --hard gitlab/master
-    popd
-fi
+for path in \
+vendor/opengapps/sources/all \
+vendor/opengapps/sources/arm \
+vendor/opengapps/sources/arm64
+do
+    if [ -d $path ]; then
+        pushd $path
+            git clean -d -f
+            git reset --hard oigin/master
+        popd
+    fi
+done
 
 if [ -d hardware/qcom/sdm845 ]; then
     rm -r hardware/qcom/sdm845
 fi
 
-pushd .repo/local_manifests
-    git fetch
-    git reset --hard origin/$ANDROID_VERSION
-    if [ -f LE.UM.2.3.2.r1.4.xml ]; then
-        rm LE.UM.2.3.2.r1.4.xml
-    fi
-popd
-
 # ----------------------------------------------------------------------
 # Manifest adjustments
 # ----------------------------------------------------------------------
 pushd .repo/manifests
+    git clean -d -f
     git checkout .
     git pull
 
@@ -101,6 +99,15 @@ index 18983252..134ba366 100644
 +  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="master" remote="gitlab" />
  </manifest>
 EOF
+popd
+
+# ----------------------------------------------------------------------
+# Local manifest adjustments
+# ----------------------------------------------------------------------
+pushd .repo/local_manifests
+    git clean -d -f
+    git fetch
+    git reset --hard origin/$ANDROID_VERSION
 popd
 
 ./repo_update.sh
@@ -282,27 +289,18 @@ EOF
 # ----------------------------------------------------------------------
 # PackageInstaller
 # ----------------------------------------------------------------------
-if [ -d vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29 ]; then
-    rm -r vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29
-fi
 mkdir -p vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29/nodpi
 cp $APK/GooglePackageInstaller.apk vendor/opengapps/sources/all/priv-app/com.google.android.packageinstaller/29/nodpi/29.apk
 
 # ----------------------------------------------------------------------
 # PermissionController
 # ----------------------------------------------------------------------
-if [ -d vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29 ]; then
-    rm -r vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29
-fi
 mkdir -p vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi
 cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291601500.apk
 
 # ----------------------------------------------------------------------
 # SetupWizard
 # ----------------------------------------------------------------------
-if [ -d vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29 ]; then
-    rm -r vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29
-fi
 mkdir -p vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi
 cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2758.apk
 
