@@ -317,4 +317,4 @@ pushd kernel/sony/msm-4.14/common-kernel
     bash ./build-kernels-clang.sh
 popd
 
-make -j4
+make -j`nproc --all`

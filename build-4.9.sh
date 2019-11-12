@@ -392,4 +392,4 @@ pushd kernel/sony/msm-4.9/common-kernel
     bash ./build-kernels-gcc.sh
 popd
 
-make -j4
+make -j`nproc --all`
