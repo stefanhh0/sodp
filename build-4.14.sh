@@ -58,7 +58,7 @@ do
     if [ -d $path ]; then
         pushd $path
             git clean -d -f
-            git reset --hard oigin/master
+            git reset --hard gitlab/master
         popd
     fi
 done
