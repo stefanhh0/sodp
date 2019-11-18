@@ -58,7 +58,7 @@ do
     if [ -d $path ]; then
         pushd $path
             git clean -d -f
-            git reset --hard gitlab/master
+            git reset --hard `git describe --all|sed 's#remotes/##1'`
         popd
     fi
 done
