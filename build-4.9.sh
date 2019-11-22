@@ -197,6 +197,9 @@ popd
 
 pushd device/sony/$PLATFORM
     sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
+
+    # ueventd: Fix Tri-LED path permissions
+    git revert --no-edit `git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
 popd
 
 # ----------------------------------------------------------------------
