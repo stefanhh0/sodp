@@ -184,6 +184,12 @@ pushd device/sony/common
     # remove the no-op Android.bp
     git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
 
+    # PowerHAL: power-helper: Fix WLAN STATS file path for k4.14
+    git revert --no-edit d3cbedf701aa8ab1ed7d571b5fb384665c92df03
+
+    # liblights: Migrate to kernel 4.14 LED class for RGB tri-led
+    git revert --no-edit 8b79a2321abe42c9d13540651cbf8a276ec7a2f1
+
     git fetch https://github.com/MarijnS95/device-sony-common
     # common-packages: Include default thermal hw module.
     git cherry-pick --no-edit 2ebad1b02a8f007510f5398b1f9041a17495978e
