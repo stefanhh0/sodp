@@ -2,10 +2,11 @@
 set -e
 
 # ----------------------------------------------------------------------
+# URL: https://developers.google.com/android/images
 # Variables have to be adjusted accordingly
 # ----------------------------------------------------------------------
 APK=~/android/q
-IMAGE_NAME=coral-qd1a.190821.011.c4-factory-6a29be3b.zip
+IMAGE_NAME=coral-qd1a.190821.014.c2-factory-839d41c9.zip
 DOWNLOAD_DIR=~/android/coral
 # ----------------------------------------------------------------------
 
