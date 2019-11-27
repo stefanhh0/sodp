@@ -12,11 +12,12 @@ DEVICE=lilac
 # ----------------------------------------------------------------------
 
 pick_pr() {
-    local PR_ID=$1
-    local COMMITS=$2
+    local REMOTE=$1
+    local PR_ID=$2
+    local COMMITS=$3
     local INDEX=$(($COMMITS - 1))
 
-    git fetch sony pull/$PR_ID/head
+    git fetch $REMOTE pull/$PR_ID/head
 
     while [ $INDEX -ge 0 ]; do
         git cherry-pick -Xtheirs --no-edit FETCH_HEAD~$INDEX
