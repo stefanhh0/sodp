@@ -84,14 +84,16 @@ diff --git a/default.xml b/default.xml
 index 18983252..134ba366 100644
 --- a/default.xml
 +++ b/default.xml
-@@ -768,4 +768,14 @@
+@@ -768,4 +768,16 @@
 
    <repo-hooks in-project="platform/tools/repohooks" enabled-list="pre-upload" />
 
 +  <remote name="opengapps" fetch="https://github.com/MarijnS95/"  />
++  <!--<remote name="opengapps" fetch="https://github.com/opengapps/"  />-->
 +  <remote name="gitlab" fetch="https://gitlab.opengapps.org/opengapps/"  />
 +
 +  <project path="vendor/opengapps/build" name="opengapps_aosp_build" revision="master" remote="opengapps" />
++  <!--<project path="vendor/opengapps/build" name="aosp_build" revision="master" remote="opengapps" />-->
 +
 +  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="master" remote="gitlab" />
 +
@@ -268,11 +270,15 @@ cat >device/sony/customization/customization.mk <<EOF
 GAPPS_VARIANT := pico
 
 GAPPS_PRODUCT_PACKAGES += \\
+    Chrome \\
     GooglePackageInstaller \\
     GooglePermissionController \\
     SetupWizard
 
 WITH_DEXPREOPT := true
+
+GAPPS_FORCE_WEBVIEW_OVERRIDES := true
+GAPPS_FORCE_BROWSER_OVERRIDES := true
 
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 EOF
