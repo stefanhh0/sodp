@@ -47,6 +47,11 @@ do
     fi
 done
 
+pushd vendor/qcom/opensource/location
+    git reset --hard m/$ANDROID_VERSION
+popd
+
+
 if [ -d device/sony/customization/ ]; then
     rm -r device/sony/customization
 fi
@@ -209,6 +214,11 @@ pushd device/sony/$PLATFORM
 
     # ueventd: Fix Tri-LED path permissions
     git revert --no-edit `git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
+popd
+
+pushd vendor/qcom/opensource/location
+    # switch to kernel 4.14
+    git revert --no-edit a74c2656de1265eefd2fdc48030c615e400c5a3e
 popd
 
 # ----------------------------------------------------------------------
