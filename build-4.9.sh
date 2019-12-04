@@ -33,53 +33,30 @@ if [ -d kernel/sony/msm-4.14 ]; then
    rm -r kernel/sony/msm-4.14
 fi
 
-for path in \
-device/sony/common \
-device/sony/sepolicy \
-device/sony/$PLATFORM \
-vendor/oss/transpower
-do
-    if [ -d $path ]; then
-        pushd $path
-            git clean -d -f
-            git reset --hard sony/master
-        popd
-    fi
-done
-
-pushd vendor/qcom/opensource/location
-    git reset --hard m/$ANDROID_VERSION
-popd
-
-
 if [ -d device/sony/customization/ ]; then
     rm -r device/sony/customization
 fi
 
 for path in \
+device/sony/common \
+device/sony/sepolicy \
+device/sony/$PLATFORM \
+kernel/sony/msm-4.9/kernel \
+kernel/sony/msm-4.9/common-kernel \
 vendor/opengapps/sources/all \
 vendor/opengapps/sources/arm \
-vendor/opengapps/sources/arm64
+vendor/opengapps/sources/arm64 \
+vendor/oss/fingerprint \
+vendor/oss/transpower \
+vendor/qcom/opensource/location
 do
     if [ -d $path ]; then
         pushd $path
             git clean -d -f
-            git reset --hard `git describe --all|sed 's#remotes/##1'`
+            git reset --hard m/$ANDROID_VERSION
         popd
     fi
 done
-
-if [ -d kernel/sony/msm-4.9/kernel ]; then
-    pushd kernel/sony/msm-4.9/kernel
-        git reset --hard sony/aosp/LE.UM.2.3.2.r1.4
-    popd
-fi
-
-if [ -d kernel/sony/msm-4.9/common-kernel ]; then
-    pushd kernel/sony/msm-4.9/common-kernel
-        git reset --hard marijns95/aosp/LE.UM.2.3.2.r1.4
-    popd
-fi
 
 # ----------------------------------------------------------------------
 # Manifest adjustments

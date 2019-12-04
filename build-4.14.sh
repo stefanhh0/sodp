@@ -33,40 +33,30 @@ if [ -d kernel/sony/msm-4.9 ]; then
    rm -r kernel/sony/msm-4.9
 fi
 
-for path in \
-device/sony/common \
-device/sony/sepolicy \
-device/sony/$PLATFORM \
-vendor/oss/transpower
-do
-    if [ -d $path ]; then
-        pushd $path
-            git clean -d -f
-            git reset --hard sony/master
-        popd
-    fi
-done
+if [ -d hardware/qcom/sdm845 ]; then
+    rm -r hardware/qcom/sdm845
+fi
 
 if [ -d device/sony/customization/ ]; then
     rm -r device/sony/customization
 fi
 
 for path in \
+device/sony/common \
+device/sony/sepolicy \
+device/sony/$PLATFORM \
 vendor/opengapps/sources/all \
 vendor/opengapps/sources/arm \
-vendor/opengapps/sources/arm64
+vendor/opengapps/sources/arm64 \
+vendor/oss/transpower
 do
     if [ -d $path ]; then
         pushd $path
             git clean -d -f
-            git reset --hard `git describe --all|sed 's#remotes/##1'`
+            git reset --hard m/$ANDROID_VERSION
         popd
     fi
 done
-
-if [ -d hardware/qcom/sdm845 ]; then
-    rm -r hardware/qcom/sdm845
-fi
 
 # ----------------------------------------------------------------------
 # Manifest adjustments
