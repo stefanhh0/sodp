@@ -234,7 +234,7 @@ index 0b46f07..2d2e5cd 100644
          <permission name="android.permission.WRITE_APN_SETTINGS"/>
          <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
      </privapp-permissions>
-@@ -576,10 +595,14 @@ It allows additional grants on top of privapp-permissions-platform.xml
+@@ -576,11 +596,15 @@ It allows additional grants on top of privapp-permissions-platform.xml
      </privapp-permissions>
 
      <privapp-permissions package="com.google.android.apps.wellbeing">
@@ -242,6 +242,7 @@ index 0b46f07..2d2e5cd 100644
 +        <permission name="android.permission.CONTROL_DISPLAY_COLOR_TRANSFORMS"/>
          <permission name="android.permission.CONTROL_DISPLAY_SATURATION"/>
 +        <permission name="android.permission.INTERACT_ACROSS_PROFILES"/>
+         <permission name="android.permission.LOCATION_HARDWARE"/>
          <permission name="android.permission.MODIFY_PHONE_STATE"/>
          <permission name="android.permission.OBSERVE_APP_USAGE"/>
          <permission name="android.permission.PACKAGE_USAGE_STATS"/>
