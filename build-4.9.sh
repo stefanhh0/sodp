@@ -198,11 +198,6 @@ pushd vendor/qcom/opensource/location
     git revert --no-edit a74c2656de1265eefd2fdc48030c615e400c5a3e
 popd
 
-pushd vendor/oss/fingerprint
-    # Merge pull request #50 from MarijnS95/swipe-gestures
-    git revert --no-edit -m 1 e8602743dead6296028c70e6d679731b53124053
-popd
-
 # ----------------------------------------------------------------------
 # Pull opengapps large files that are stored in git lfs
 # ----------------------------------------------------------------------
