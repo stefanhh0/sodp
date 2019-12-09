@@ -6,8 +6,8 @@ set -e
 # Variables have to be adjusted accordingly
 # ----------------------------------------------------------------------
 APK=~/android/q
-IMAGE_NAME=coral-qd1a.190821.014.c2-factory-839d41c9.zip
-DOWNLOAD_DIR=~/android/coral
+IMAGE_NAME=crosshatch-qq1a.191205.008-factory-ff62c022.zip
+DOWNLOAD_DIR=~/android/crosshatch
 # ----------------------------------------------------------------------
 
 IMAGE_FILE=$DOWNLOAD_DIR/$IMAGE_NAME

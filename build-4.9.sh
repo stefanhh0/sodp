@@ -375,13 +375,13 @@ cp $APK/GooglePackageInstaller.apk vendor/opengapps/sources/all/priv-app/com.goo
 # PermissionController
 # ----------------------------------------------------------------------
 mkdir -p vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi
-cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291601500.apk
+cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291900200.apk
 
 # ----------------------------------------------------------------------
 # SetupWizard
 # ----------------------------------------------------------------------
 mkdir -p vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi
-cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2758.apk
+cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2842.apk
 
 . build/envsetup.sh
 lunch $LUNCH_CHOICE
