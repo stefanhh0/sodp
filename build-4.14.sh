@@ -309,10 +309,10 @@ make clean
 
 pushd kernel/sony/msm-4.14/common-kernel
     PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
-    sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-clang.sh
-    sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-clang.sh
+    sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
+    sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-gcc.sh
     find . -name "*dtb*" -exec rm "{}" \;
-    bash ./build-kernels-clang.sh
+    bash ./build-kernels-gcc.sh
 popd
 
 make -j`nproc --all`
