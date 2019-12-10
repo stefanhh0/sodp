@@ -45,6 +45,7 @@ for path in \
 device/sony/common \
 device/sony/sepolicy \
 device/sony/$PLATFORM \
+kernel/sony/msm-4.14/common-kernel \
 vendor/opengapps/sources/all \
 vendor/opengapps/sources/arm \
 vendor/opengapps/sources/arm64 \
@@ -52,7 +53,7 @@ vendor/oss/transpower
 do
     if [ -d $path ]; then
         pushd $path
-            git clean -d -f
+            git clean -d -f -e "*dtb*"
             git reset --hard m/$ANDROID_VERSION
         popd
     fi

@@ -52,7 +52,7 @@ vendor/qcom/opensource/location
 do
     if [ -d $path ]; then
         pushd $path
-            git clean -d -f
+            git clean -d -f -e "*dtb*"
             git reset --hard m/$ANDROID_VERSION
         popd
     fi
