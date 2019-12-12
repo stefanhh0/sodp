@@ -303,6 +303,12 @@ cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/ap
 mkdir -p vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi
 cp $APK/SetupWizardPrebuilt.apk vendor/opengapps/sources/all/priv-app/com.google.android.setupwizard.default/29/nodpi/2842.apk
 
+# ----------------------------------------------------------------------
+# TrichromeLibrary
+# ----------------------------------------------------------------------
+mkdir -p vendor/opengapps/sources/all/app/com.google.android.trichromelibrary/29/nodpi
+cp $APK/TrichromeLibrary.apk vendor/opengapps/sources/all/app/com.google.android.trichromelibrary/29/nodpi/373018658.apk
+
 . build/envsetup.sh
 lunch $LUNCH_CHOICE
 

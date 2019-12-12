@@ -43,6 +43,7 @@ sudo mount -o ro system.raw system
 cp -v ./system/system/priv-app/GooglePackageInstaller/GooglePackageInstaller.apk $APK
 cp -v ./system/system/priv-app/GooglePermissionControllerPrebuilt/GooglePermissionControllerPrebuilt.apk $APK
 cp -v ./product/priv-app/SetupWizardPrebuilt/SetupWizardPrebuilt.apk $APK
+cp -v ./product/app/TrichromeLibrary/TrichromeLibrary.apk $APK
 
 sudo umount product
 sudo umount system
