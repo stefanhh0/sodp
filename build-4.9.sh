@@ -163,8 +163,8 @@ if [ -d kernel/sony/msm-4.14 ]; then
 fi
 
 pushd device/sony/common
-    sed -i 's/TARGET_VENDOR_VERSION := .*/TARGET_VENDOR_VERSION := v9/1' common-odm.mk
-    sed -i 's/QCOM_NEW_MEDIA_PLATFORM := .*/QCOM_NEW_MEDIA_PLATFORM := sdm845 sm8150/1' hardware/qcom/Android.mk
+    #TEMP: Kernel 4.9 backward compat
+    pick_pr sony 666 1
 
     # remove the no-op Android.bp
     git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
