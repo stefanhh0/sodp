@@ -177,13 +177,13 @@ pushd device/sony/common
 
     git fetch https://github.com/MarijnS95/device-sony-common
     # common-packages: Include default thermal hw module.
-    git cherry-pick --no-edit 2ebad1b02a8f007510f5398b1f9041a17495978e
+    git cherry-pick --no-edit d74ebb45e1783fdd1e757faa2abcb626b34489f5
 popd
 
 pushd device/sony/sepolicy
     git fetch https://github.com/MarijnS95/device-sony-sepolicy
     # WIP: Copy hal_thermal_default from crosshatch.
-    git cherry-pick --no-edit 6327e77551a688701719aa5438f63e0121c296fd
+    git cherry-pick --no-edit 2974bc6a5497c945a72df3882bc032aa741ce443
 popd
 
 pushd device/sony/$PLATFORM
