@@ -5,12 +5,20 @@ set -e
 # URL: https://developers.google.com/android/images
 # Variables have to be adjusted accordingly
 # ----------------------------------------------------------------------
-APK=~/android/q
+APK_DIR=~/android/q
 IMAGE_NAME=crosshatch-qq1a.191205.008-factory-ff62c022.zip
 DOWNLOAD_DIR=~/android/crosshatch
 # ----------------------------------------------------------------------
 
 IMAGE_FILE=$DOWNLOAD_DIR/$IMAGE_NAME
+
+APKS="
+system/system/priv-app/GooglePackageInstaller/GooglePackageInstaller.apk
+system/system/priv-app/GooglePermissionControllerPrebuilt/GooglePermissionControllerPrebuilt.apk
+product/priv-app/SetupWizardPrebuilt/SetupWizardPrebuilt.apk
+product/priv-app/SetupWizardPrebuilt/SetupWizardPrebuilt.apk
+product/app/TrichromeLibrary/TrichromeLibrary.apk
+"
 
 if [ ! -d $DOWNLOAD_DIR ]; then
     mkdir $DOWNLOAD_DIR
@@ -40,10 +48,9 @@ simg2img system.img system.raw
 mkdir system
 sudo mount -o ro system.raw system
 
-cp -v ./system/system/priv-app/GooglePackageInstaller/GooglePackageInstaller.apk $APK
-cp -v ./system/system/priv-app/GooglePermissionControllerPrebuilt/GooglePermissionControllerPrebuilt.apk $APK
-cp -v ./product/priv-app/SetupWizardPrebuilt/SetupWizardPrebuilt.apk $APK
-cp -v ./product/app/TrichromeLibrary/TrichromeLibrary.apk $APK
+for apk in $APKS; do
+    cp -v ./$apk $APK_DIR
+done
 
 sudo umount product
 sudo umount system
