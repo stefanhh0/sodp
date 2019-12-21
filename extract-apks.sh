@@ -13,11 +13,7 @@ DOWNLOAD_DIR=~/android/crosshatch
 IMAGE_FILE=$DOWNLOAD_DIR/$IMAGE_NAME
 
 APKS="
-system/system/priv-app/GooglePackageInstaller/GooglePackageInstaller.apk
 system/system/priv-app/GooglePermissionControllerPrebuilt/GooglePermissionControllerPrebuilt.apk
-product/priv-app/SetupWizardPrebuilt/SetupWizardPrebuilt.apk
-product/priv-app/SetupWizardPrebuilt/SetupWizardPrebuilt.apk
-product/app/TrichromeLibrary/TrichromeLibrary.apk
 "
 
 if [ ! -d $DOWNLOAD_DIR ]; then
