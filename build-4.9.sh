@@ -5,7 +5,6 @@ set -e
 # Variables have to be adjusted accordingly
 # ----------------------------------------------------------------------
 SOURCE=~/android/source
-APK=~/android/q
 LUNCH_CHOICE=aosp_g8441-userdebug
 PLATFORM=yoshino
 DEVICE=lilac
@@ -199,6 +198,11 @@ pushd vendor/qcom/opensource/location
     git revert --no-edit a74c2656de1265eefd2fdc48030c615e400c5a3e
 popd
 
+pushd vendor/opengapps/build
+    # Add GooglePermissionController that replaces AOSP one.
+    git revert --no-edit b21b4598f0f654e5da098c43436ea905288836e7
+popd
+
 # ----------------------------------------------------------------------
 # Pull opengapps large files that are stored in git lfs
 # ----------------------------------------------------------------------
@@ -216,15 +220,12 @@ wait
 # ----------------------------------------------------------------------
 # customization to build opengapps
 # ----------------------------------------------------------------------
-rm -r vendor/opengapps/build/modules/FaceLock
-
 mkdir device/sony/customization
 cat >device/sony/customization/customization.mk <<EOF
 GAPPS_VARIANT := pico
 
 GAPPS_PRODUCT_PACKAGES += \\
-    Chrome \\
-    GooglePermissionController
+    Chrome
 
 WITH_DEXPREOPT := true
 
@@ -233,22 +234,6 @@ GAPPS_FORCE_BROWSER_OVERRIDES := true
 
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 EOF
-
-# ----------------------------------------------------------------------
-# Copy required apks for android 10 that are not yet in opengapps.
-# The apks can be obtained from:
-# https://developers.google.com/android/images
-#
-# The apks used here are downloaded via extract-apks.sh
-#
-# If using a different image, version numbers might be different and
-# have to be adjusted using the versionCode from the command:
-# aapt dump badging <name>.apk |grep versionCode
-# ----------------------------------------------------------------------
-# PermissionController
-# ----------------------------------------------------------------------
-mkdir -p vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi
-cp $APK/GooglePermissionControllerPrebuilt.apk vendor/opengapps/sources/arm64/app/com.google.android.permissioncontroller/29/nodpi/291900200.apk
 
 . build/envsetup.sh
 lunch $LUNCH_CHOICE
