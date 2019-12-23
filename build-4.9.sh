@@ -177,7 +177,7 @@ pushd device/sony/common
 
     git fetch https://github.com/MarijnS95/device-sony-common
     # common-packages: Include default thermal hw module.
-    git cherry-pick --no-edit d74ebb45e1783fdd1e757faa2abcb626b34489f5
+    git cherry-pick --no-edit ed49f27232ec118ca6f5378fc132f63ea836521a
 popd
 
 pushd device/sony/sepolicy
