@@ -75,19 +75,15 @@ diff --git a/default.xml b/default.xml
 index 18983252..134ba366 100644
 --- a/default.xml
 +++ b/default.xml
-@@ -768,4 +768,16 @@
+@@ -768,4 +768,12 @@
 
    <repo-hooks in-project="platform/tools/repohooks" enabled-list="pre-upload" />
 
-+  <remote name="opengapps" fetch="https://github.com/MarijnS95/"  />
-+  <!--<remote name="opengapps" fetch="https://github.com/opengapps/"  />-->
-+  <remote name="gitlab" fetch="https://gitlab.opengapps.org/opengapps/"  />
++  <remote name="opengapps" fetch="https://github.com/opengapps/" />
++  <remote name="gitlab" fetch="https://gitlab.opengapps.org/opengapps/" />
 +
-+  <project path="vendor/opengapps/build" name="opengapps_aosp_build" revision="master" remote="opengapps" />
-+  <!--<project path="vendor/opengapps/build" name="aosp_build" revision="master" remote="opengapps" />-->
-+
++  <project path="vendor/opengapps/build" name="aosp_build" revision="master" remote="opengapps" />
 +  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="ten" remote="gitlab" />
-+
 +  <!-- arm64 depends on arm -->
 +  <project path="vendor/opengapps/sources/arm" name="arm" clone-depth="1" revision="ten" remote="gitlab" />
 +  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="ten" remote="gitlab" />
@@ -116,11 +112,6 @@ pushd device/sony/sepolicy
     git fetch https://github.com/MarijnS95/device-sony-sepolicy
     # WIP: Copy hal_thermal_default from crosshatch.
     git cherry-pick --no-edit 2974bc6a5497c945a72df3882bc032aa741ce443
-popd
-
-pushd vendor/opengapps/build
-    # Add GooglePermissionController that replaces AOSP one.
-    git revert --no-edit b21b4598f0f654e5da098c43436ea905288836e7
 popd
 
 # ----------------------------------------------------------------------
