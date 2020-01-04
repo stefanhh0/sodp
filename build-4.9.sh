@@ -186,7 +186,10 @@ pushd device/sony/$PLATFORM
     sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
 
     # ueventd: Fix Tri-LED path permissions
-    git revert --no-edit `git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
+    TRI_LED_COMMIT=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
+    if [ -n "$TRI_LED_COMMIT" ]; then
+        git revert --no-edit $TRI_LED_COMMIT
+    fi
 popd
 
 pushd vendor/qcom/opensource/location
