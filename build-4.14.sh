@@ -14,13 +14,20 @@ pick_pr() {
     local REMOTE=$1
     local PR_ID=$2
     local COMMITS=$3
+    local MAX_COMMITS=$4
     local INDEX=$(($COMMITS - 1))
+    local COUNT=0
+
+    if [ -z $MAX_COMMITS ]; then
+        MAX_COMMITS=$COMMITS
+    fi
 
     git fetch $REMOTE pull/$PR_ID/head
 
-    while [ $INDEX -ge 0 ]; do
+    while [ $INDEX -ge 0 -a $COUNT -lt $MAX_COMMITS ]; do
         git cherry-pick -Xtheirs --no-edit FETCH_HEAD~$INDEX
         INDEX=$(($INDEX - 1))
+        COUNT=$(($COUNT + 1))
     done
 }
 
