@@ -89,10 +89,10 @@ index 18983252..134ba366 100644
 +  <remote name="gitlab" fetch="https://gitlab.opengapps.org/opengapps/" />
 +
 +  <project path="vendor/opengapps/build" name="aosp_build" revision="master" remote="opengapps" />
-+  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="ten" remote="gitlab" />
++  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="master" remote="gitlab" />
 +  <!-- arm64 depends on arm -->
-+  <project path="vendor/opengapps/sources/arm" name="arm" clone-depth="1" revision="ten" remote="gitlab" />
-+  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="ten" remote="gitlab" />
++  <project path="vendor/opengapps/sources/arm" name="arm" clone-depth="1" revision="master" remote="gitlab" />
++  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="master" remote="gitlab" />
  </manifest>
 EOF
 popd
