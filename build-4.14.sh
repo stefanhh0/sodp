@@ -158,12 +158,20 @@ lunch $LUNCH_CHOICE
 
 make clean
 
-pushd kernel/sony/msm-4.14/common-kernel
-    PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
-    sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
-    sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-gcc.sh
-    find . -name "*dtb*" -exec rm "{}" \;
-    bash ./build-kernels-gcc.sh
-popd
+for COMPILER in gcc clang; do
+    pushd kernel/sony/msm-4.14/common-kernel
+        PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
+        sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-${COMPILER}.sh
+        sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-${COMPILER}.sh
+        find . -name "*dtb*" -exec rm "{}" \;
+        bash ./build-kernels-${COMPILER}.sh
+    popd
+
+    make -j`nproc --all` bootimage
+
+    pushd out/target/product/lilac
+        cp -a boot.img boot-${COMPILER}.img
+    popd
+done
 
 make -j`nproc --all`
