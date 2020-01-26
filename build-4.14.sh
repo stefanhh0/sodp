@@ -48,9 +48,9 @@ if [ -d device/sony/customization/ ]; then
 fi
 
 for path in \
+device/sony/$PLATFORM \
 device/sony/common \
 device/sony/sepolicy \
-device/sony/$PLATFORM \
 kernel/sony/msm-4.14/common-kernel \
 vendor/opengapps/build \
 vendor/opengapps/sources/all \

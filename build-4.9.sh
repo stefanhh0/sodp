@@ -44,9 +44,9 @@ if [ -d device/sony/customization/ ]; then
 fi
 
 for path in \
+device/sony/$PLATFORM \
 device/sony/common \
 device/sony/sepolicy \
-device/sony/$PLATFORM \
 kernel/sony/msm-4.9/kernel \
 kernel/sony/msm-4.9/common-kernel \
 vendor/opengapps/build \
@@ -165,6 +165,16 @@ if [ -d kernel/sony/msm-4.14 ]; then
    rm -r kernel/sony/msm-4.14
 fi
 
+pushd device/sony/$PLATFORM
+    sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
+
+    # ueventd: Fix Tri-LED path permissions
+    TRI_LED_COMMIT=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
+    if [ -n "$TRI_LED_COMMIT" ]; then
+        git revert --no-edit $TRI_LED_COMMIT
+    fi
+popd
+
 pushd device/sony/common
     #TEMP: Kernel 4.9 backward compat
     pick_pr sony 666 1
@@ -187,16 +197,6 @@ pushd device/sony/sepolicy
     git fetch https://github.com/MarijnS95/device-sony-sepolicy
     # WIP: Copy hal_thermal_default from crosshatch.
     git cherry-pick --no-edit 2974bc6a5497c945a72df3882bc032aa741ce443
-popd
-
-pushd device/sony/$PLATFORM
-    sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
-
-    # ueventd: Fix Tri-LED path permissions
-    TRI_LED_COMMIT=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
-    if [ -n "$TRI_LED_COMMIT" ]; then
-        git revert --no-edit $TRI_LED_COMMIT
-    fi
 popd
 
 pushd vendor/qcom/opensource/location
