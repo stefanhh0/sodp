@@ -199,6 +199,17 @@ pushd device/sony/sepolicy
     git cherry-pick --no-edit 2974bc6a5497c945a72df3882bc032aa741ce443
 popd
 
+pushd vendor/opengapps/build
+    # opengapps-packages: Remove FaceLock
+    pick_pr opengapps 241 1
+
+    # opengapps-packages: Re-add webview device overlay for SDK <= 24, use device overlay for SDK <= 28
+    pick_pr opengapps 242 3
+
+    # modules: Load TrichromeLibrary module only on API >= 29.
+    pick_pr opengapps 243 1
+popd
+
 pushd vendor/qcom/opensource/location
     # switch to kernel 4.14
     git revert --no-edit a74c2656de1265eefd2fdc48030c615e400c5a3e
