@@ -210,11 +210,6 @@ pushd vendor/opengapps/build
     pick_pr opengapps 243 1
 popd
 
-pushd vendor/qcom/opensource/location
-    # switch to kernel 4.14
-    git revert --no-edit a74c2656de1265eefd2fdc48030c615e400c5a3e
-popd
-
 # ----------------------------------------------------------------------
 # Pull opengapps large files that are stored in git lfs
 # ----------------------------------------------------------------------
