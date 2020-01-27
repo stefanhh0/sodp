@@ -5,6 +5,7 @@ set -e
 # Variables have to be adjusted accordingly
 # ----------------------------------------------------------------------
 SOURCE=~/android/source
+APK_DIR=~/android/apk
 LUNCH_CHOICE=aosp_g8441-userdebug
 PLATFORM=yoshino
 DEVICE=lilac
@@ -29,6 +30,15 @@ pick_pr() {
         INDEX=$(($INDEX - 1))
         COUNT=$(($COUNT + 1))
     done
+}
+
+put_gapps_apk() {
+    local APK_NAME=$1
+    local TARGET_DIR=$2
+    local VERSION=`aapt dump badging $APK_DIR/$APK_NAME |grep versionCode=|sed "s#.*versionCode='\([[:digit:]]*\).*#\1#1"`
+    mkdir -p $TARGET_DIR
+    rm $TARGET_DIR/*
+    cp $APK_DIR/$APK_NAME $TARGET_DIR/$VERSION.apk
 }
 
 cd $SOURCE
