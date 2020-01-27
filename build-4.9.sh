@@ -230,7 +230,7 @@ done
 wait
 
 # ----------------------------------------------------------------------
-# customization to build opengapps
+# Customization to build opengapps
 # ----------------------------------------------------------------------
 mkdir device/sony/customization
 cat >device/sony/customization/customization.mk <<EOF
