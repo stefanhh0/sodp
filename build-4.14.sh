@@ -140,6 +140,9 @@ pushd vendor/opengapps/build
 
     # modules: Load TrichromeLibrary module only on API >= 29.
     pick_pr opengapps 243 1
+
+    # Prefer ARCH specific prebuilt APKs
+    pick_pr opengapps 244 1
 popd
 
 # ----------------------------------------------------------------------
