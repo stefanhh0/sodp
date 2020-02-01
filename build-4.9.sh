@@ -57,8 +57,8 @@ for path in \
 device/sony/$PLATFORM \
 device/sony/common \
 device/sony/sepolicy \
-kernel/sony/msm-4.9/kernel \
 kernel/sony/msm-4.9/common-kernel \
+kernel/sony/msm-4.9/kernel \
 vendor/opengapps/build \
 vendor/opengapps/sources/all \
 vendor/opengapps/sources/arm \
