@@ -255,6 +255,8 @@ GAPPS_FORCE_BROWSER_OVERRIDES := true
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 EOF
 
+put_gapps_apk TrichromeLibraryPlayStore.apk vendor/opengapps/sources/arm64/app/com.google.android.trichromelibrary/29/nodpi
+
 . build/envsetup.sh
 lunch $LUNCH_CHOICE
 
