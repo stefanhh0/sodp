@@ -116,6 +116,12 @@ pushd .repo/local_manifests
     git reset --hard origin/$ANDROID_VERSION
     rm LA.UM.7.1.r1.xml
 
+    # qcom: Switch SM8150 media HAL to LA.UM.8.1.r1 codebase
+    git revert --no-edit f9c8739551420d17858387148e7c880e86668a26
+
+    # qcom: Clone legacy media HAL for k4.14 at sdm660-libion
+    git revert --no-edit e5a7750a9e5724d2778243d8fb6ce76baec0ef48
+
     # remove the no-op Android.bp
     git revert --no-edit f2bc4d5e1bfd7d4b48d373350b70dac49c70d2af
 
@@ -125,27 +131,27 @@ pushd .repo/local_manifests
     # revert switch display to aosp/LA.UM.7.1.r1
     patch -p1 <<EOF
 diff --git a/qcom.xml b/qcom.xml
-index 27bc6b7..99d0487 100644
+index 87a3f9c..81964a8 100644
 --- a/qcom.xml
 +++ b/qcom.xml
-@@ -9,9 +9,8 @@
+@@ -8,8 +8,7 @@
 
  <project path="hardware/qcom/gps" name="platform/hardware/qcom/sdm845/gps" remote="aosp" groups="qcom_sdm845" />
 
 -<project path="hardware/qcom/display/sde" name="hardware-qcom-display" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" />
 -<project path="hardware/qcom/media/sm8150" name="hardware-qcom-media" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" />
-
 +<project path="hardware/qcom/display/sde" name="hardware-qcom-display" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
- <project path="hardware/qcom/media/sdm845" name="platform/hardware/qcom/sdm845/media" groups="qcom_sdm845" remote="aosp" />
 
  <project path="hardware/qcom/data/ipacfg-mgr/sdm845" name="platform/hardware/qcom/sdm845/data/ipacfg-mgr" groups="qcom_sdm845" remote="aosp" />
-@@ -21,7 +19,7 @@
- <project path="vendor/qcom/opensource/dataservices" name="vendor-qcom-opensource-dataservices" groups="device" remote="sony" revision="master" />
- <project path="vendor/qcom/opensource/location" name="vendor-qcom-opensource-location" groups="device" remote="sony" revision="p-mr0" />
+
+@@ -21,7 +20,7 @@
+ <project path="vendor/qcom/opensource/telephony" name="vendor-qcom-opensource-telephony" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" />
+ <project path="vendor/qcom/opensource/vibrator" name="vendor-qcom-opensource-vibrator" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" />
  <project path="vendor/qcom/opensource/wlan" name="hardware-qcom-wlan" groups="device" remote="sony" revision="master" />
 -<project path="vendor/qcom/opensource/interfaces" name="vendor-qcom-opensource-interfaces" groups="device" remote="sony" revision="aosp/LA.UM.7.1.r1" >
+-  <linkfile dest="vendor/qcom/opensource/Android.bp" src="os_pickup.bp" />
 +<project path="vendor/qcom/opensource/interfaces" name="vendor-qcom-opensource-interfaces" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" >
-   <linkfile dest="vendor/qcom/opensource/Android.bp" src="os_pickup.bp" />
++   <linkfile dest="vendor/qcom/opensource/Android.bp" src="os_pickup.bp" />
  </project>
  </manifest>
 EOF
@@ -188,6 +194,28 @@ popd
 pushd device/sony/common
     #TEMP: Kernel 4.9 backward compat
     pick_pr sony 666 1
+
+    # revert switch to legacy lights
+    patch -p1 <<EOF
+diff --git a/common-treble.mk b/common-treble.mk
+index 44c1f69..09eda13 100644
+--- a/common-treble.mk
++++ b/common-treble.mk
+@@ -73,13 +73,8 @@ PRODUCT_PACKAGES += \\
+     android.hardware.gnss@1.1-service-qti
+
+ # Light
+-ifeq (\$(SOMC_KERNEL_VERSION),4.14)
+ PRODUCT_PACKAGES += \\
+     android.hardware.light@2.0-service.sony
+-else
+-PRODUCT_PACKAGES += \\
+-    android.hardware.light@2.0-service.sony.legacy
+-endif
+
+ # Health
+ PRODUCT_PACKAGES += \\
+EOF
 
     # remove the no-op Android.bp
     git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
