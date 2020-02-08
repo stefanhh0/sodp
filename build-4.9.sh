@@ -209,20 +209,6 @@ pushd device/sony/sepolicy
     git cherry-pick --no-edit 6f161dcdb89ad62de58d5ec55ed73bd65e03e54d
 popd
 
-pushd vendor/opengapps/build
-    # opengapps-packages: Remove FaceLock
-    pick_pr opengapps 241 1
-
-    # opengapps-packages: Re-add webview device overlay for SDK <= 24, use device overlay for SDK <= 28
-    pick_pr opengapps 242 3
-
-    # modules: Load TrichromeLibrary module only on API >= 29.
-    pick_pr opengapps 243 1
-
-    # Prefer ARCH specific prebuilt APKs
-    pick_pr opengapps 244 1
-popd
-
 # ----------------------------------------------------------------------
 # Pull opengapps large files that are stored in git lfs
 # ----------------------------------------------------------------------
