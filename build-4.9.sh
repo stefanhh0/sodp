@@ -96,13 +96,13 @@ index 18983252..134ba366 100644
    <repo-hooks in-project="platform/tools/repohooks" enabled-list="pre-upload" />
 
 +  <remote name="opengapps" fetch="https://github.com/opengapps/" />
-+  <remote name="gitlab" fetch="https://gitlab.opengapps.org/opengapps/" />
++  <remote name="opengapps-gitlab" fetch="https://gitlab.opengapps.org/opengapps/" />
 +
 +  <project path="vendor/opengapps/build" name="aosp_build" revision="master" remote="opengapps" />
-+  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="master" remote="gitlab" />
++  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="master" remote="opengapps-gitlab" />
 +  <!-- arm64 depends on arm -->
-+  <project path="vendor/opengapps/sources/arm" name="arm" clone-depth="1" revision="master" remote="gitlab" />
-+  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="master" remote="gitlab" />
++  <project path="vendor/opengapps/sources/arm" name="arm" clone-depth="1" revision="master" remote="opengapps-gitlab" />
++  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="master" remote="opengapps-gitlab" />
  </manifest>
 EOF
 popd
@@ -218,7 +218,7 @@ vendor/opengapps/sources/arm \
 vendor/opengapps/sources/arm64
 do
     pushd $path
-        git lfs pull &
+        git lfs pull opengapps-gitlab &
     popd
 done
 wait
