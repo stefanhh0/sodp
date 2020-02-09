@@ -237,6 +237,10 @@ pushd device/sony/sepolicy
     git cherry-pick --no-edit 6f161dcdb89ad62de58d5ec55ed73bd65e03e54d
 popd
 
+pushd kernel/sony/msm-4.9/kernel
+    pick_pr sony 2184 3
+popd
+
 # ----------------------------------------------------------------------
 # Pull opengapps large files that are stored in git lfs
 # ----------------------------------------------------------------------
