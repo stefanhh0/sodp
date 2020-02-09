@@ -41,51 +41,50 @@ put_gapps_apk() {
     cp $APK_DIR/$APK_NAME $TARGET_DIR/$VERSION.apk
 }
 
-cd $SOURCE
-
-ANDROID_VERSION=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
-
-if [ -d kernel/sony/msm-4.14 ]; then
-   rm -r kernel/sony/msm-4.14
-fi
-
-if [ -d device/sony/customization/ ]; then
-    rm -r device/sony/customization
-fi
-
-for path in \
-device/sony/$PLATFORM \
-device/sony/common \
-device/sony/sepolicy \
-kernel/sony/msm-4.9/common-kernel \
-kernel/sony/msm-4.9/kernel \
-vendor/opengapps/build \
-vendor/opengapps/sources/all \
-vendor/opengapps/sources/arm \
-vendor/opengapps/sources/arm64 \
-vendor/oss/fingerprint \
-vendor/oss/transpower \
-vendor/qcom/opensource/location
-do
-    if [ -d $path ]; then
-        pushd $path
-            git clean -d -f -e "*dtb*"
-            git reset --hard m/$ANDROID_VERSION
-        popd
+clean()  {
+    if [ -d kernel/sony/msm-4.14 ]; then
+        rm -r kernel/sony/msm-4.14
     fi
-done
 
-# ----------------------------------------------------------------------
-# Manifest adjustments
-# ----------------------------------------------------------------------
-pushd .repo/manifests
-    git clean -d -f
-    git checkout .
-    git pull
+    if [ -d device/sony/customization/ ]; then
+        rm -r device/sony/customization
+    fi
 
+    for path in \
+        device/sony/$PLATFORM \
+        device/sony/common \
+        device/sony/sepolicy \
+        kernel/sony/msm-4.9/common-kernel \
+        kernel/sony/msm-4.9/kernel \
+        vendor/opengapps/build \
+        vendor/opengapps/sources/all \
+        vendor/opengapps/sources/arm \
+        vendor/opengapps/sources/arm64 \
+        vendor/oss/fingerprint \
+        vendor/oss/transpower \
+        vendor/qcom/opensource/location
+    do
+        if [ -d $path ]; then
+            pushd $path
+                git clean -d -f -e "*dtb*"
+                git reset --hard m/$ANDROID_VERSION
+            popd
+        fi
+    done
+}
+
+patch_manifests() {
     # ----------------------------------------------------------------------
-    # Include opengapps repos
+    # Manifest adjustments
     # ----------------------------------------------------------------------
+    pushd .repo/manifests
+        git clean -d -f
+        git checkout .
+        git pull
+
+        # ----------------------------------------------------------------------
+        # Include opengapps repos
+        # ----------------------------------------------------------------------
     patch -p1 <<EOF
 diff --git a/default.xml b/default.xml
 index 18983252..134ba366 100644
@@ -105,31 +104,31 @@ index 18983252..134ba366 100644
 +  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="master" remote="opengapps-gitlab" />
  </manifest>
 EOF
-popd
+    popd
 
-# ----------------------------------------------------------------------
-# Local manifest adjustments
-# ----------------------------------------------------------------------
-pushd .repo/local_manifests
-    git clean -d -f
-    git fetch
-    git reset --hard origin/$ANDROID_VERSION
-    rm LA.UM.7.1.r1.xml
+    # ----------------------------------------------------------------------
+    # Local manifest adjustments
+    # ----------------------------------------------------------------------
+    pushd .repo/local_manifests
+        git clean -d -f
+        git fetch
+        git reset --hard origin/$ANDROID_VERSION
+        rm LA.UM.7.1.r1.xml
 
-    # qcom: Switch SM8150 media HAL to LA.UM.8.1.r1 codebase
-    git revert --no-edit f9c8739551420d17858387148e7c880e86668a26
+        # qcom: Switch SM8150 media HAL to LA.UM.8.1.r1 codebase
+        git revert --no-edit f9c8739551420d17858387148e7c880e86668a26
 
-    # qcom: Clone legacy media HAL for k4.14 at sdm660-libion
-    git revert --no-edit e5a7750a9e5724d2778243d8fb6ce76baec0ef48
+        # qcom: Clone legacy media HAL for k4.14 at sdm660-libion
+        git revert --no-edit e5a7750a9e5724d2778243d8fb6ce76baec0ef48
 
-    # remove the no-op Android.bp
-    git revert --no-edit f2bc4d5e1bfd7d4b48d373350b70dac49c70d2af
+        # remove the no-op Android.bp
+        git revert --no-edit f2bc4d5e1bfd7d4b48d373350b70dac49c70d2af
 
-    # add display-commonsys-intf git
-    git revert --no-edit 52af0a25c9d863179068d912ff1e231639f8de43
+        # add display-commonsys-intf git
+        git revert --no-edit 52af0a25c9d863179068d912ff1e231639f8de43
 
-    # revert switch display to aosp/LA.UM.7.1.r1
-    patch -p1 <<EOF
+        # revert switch display to aosp/LA.UM.7.1.r1
+        patch -p1 <<EOF
 diff --git a/qcom.xml b/qcom.xml
 index 87a3f9c..81964a8 100644
 --- a/qcom.xml
@@ -156,10 +155,10 @@ index 87a3f9c..81964a8 100644
  </manifest>
 EOF
 
-    # ----------------------------------------------------------------------
-    # 4.9 kernel-repos
-    # ----------------------------------------------------------------------
-    cat >LE.UM.2.3.2.r1.4.xml <<EOF
+        # ----------------------------------------------------------------------
+        # 4.9 kernel-repos
+        # ----------------------------------------------------------------------
+        cat >LE.UM.2.3.2.r1.4.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
 <remote name="sony" fetch="https://github.com/sonyxperiadev/" />
@@ -173,30 +172,34 @@ EOF
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/qcacld-3.0" name="vendor-qcom-opensource-wlan-qcacld-3.0" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
 </manifest>
 EOF
-popd
+    popd
+}
 
-./repo_update.sh
+repo_update() {
+    ./repo_update.sh
+}
 
-if [ -d kernel/sony/msm-4.14 ]; then
-   rm -r kernel/sony/msm-4.14
-fi
-
-pushd device/sony/$PLATFORM
-    sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
-
-    # ueventd: Fix Tri-LED path permissions
-    TRI_LED_COMMIT=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
-    if [ -n "$TRI_LED_COMMIT" ]; then
-        git revert --no-edit $TRI_LED_COMMIT
+post_update() {
+    if [ -d kernel/sony/msm-4.14 ]; then
+        rm -r kernel/sony/msm-4.14
     fi
-popd
 
-pushd device/sony/common
-    #TEMP: Kernel 4.9 backward compat
-    pick_pr sony 666 1
+    pushd device/sony/$PLATFORM
+        sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
 
-    # revert switch to legacy lights
-    patch -p1 <<EOF
+        # ueventd: Fix Tri-LED path permissions
+        TRI_LED_COMMIT=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
+        if [ -n "$TRI_LED_COMMIT" ]; then
+            git revert --no-edit $TRI_LED_COMMIT
+        fi
+    popd
+
+    pushd device/sony/common
+        #TEMP: Kernel 4.9 backward compat
+        pick_pr sony 666 1
+
+        # revert switch to legacy lights
+        patch -p1 <<EOF
 diff --git a/common-treble.mk b/common-treble.mk
 index 44c1f69..09eda13 100644
 --- a/common-treble.mk
@@ -217,49 +220,49 @@ index 44c1f69..09eda13 100644
  PRODUCT_PACKAGES += \\
 EOF
 
-    # remove the no-op Android.bp
-    git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
+        # remove the no-op Android.bp
+        git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
 
-    # PowerHAL: power-helper: Fix WLAN STATS file path for k4.14
-    git revert --no-edit d3cbedf701aa8ab1ed7d571b5fb384665c92df03
+        # PowerHAL: power-helper: Fix WLAN STATS file path for k4.14
+        git revert --no-edit d3cbedf701aa8ab1ed7d571b5fb384665c92df03
 
-    # liblights: Migrate to kernel 4.14 LED class for RGB tri-led
-    git revert --no-edit 8b79a2321abe42c9d13540651cbf8a276ec7a2f1
+        # liblights: Migrate to kernel 4.14 LED class for RGB tri-led
+        git revert --no-edit 8b79a2321abe42c9d13540651cbf8a276ec7a2f1
 
-    git fetch https://github.com/MarijnS95/device-sony-common
-    # common-packages: Include default thermal hw module.
-    git cherry-pick --no-edit bccbb5d57ea6605f7f814e547e46c32257c4b193
-popd
-
-pushd device/sony/sepolicy
-    git fetch https://github.com/MarijnS95/device-sony-sepolicy
-    # WIP: Copy hal_thermal_default from crosshatch.
-    git cherry-pick --no-edit 6f161dcdb89ad62de58d5ec55ed73bd65e03e54d
-popd
-
-pushd kernel/sony/msm-4.9/kernel
-    pick_pr sony 2184 3
-popd
-
-# ----------------------------------------------------------------------
-# Pull opengapps large files that are stored in git lfs
-# ----------------------------------------------------------------------
-for path in \
-vendor/opengapps/sources/all \
-vendor/opengapps/sources/arm \
-vendor/opengapps/sources/arm64
-do
-    pushd $path
-        git lfs pull opengapps-gitlab &
+        git fetch https://github.com/MarijnS95/device-sony-common
+        # common-packages: Include default thermal hw module.
+        git cherry-pick --no-edit bccbb5d57ea6605f7f814e547e46c32257c4b193
     popd
-done
-wait
 
-# ----------------------------------------------------------------------
-# Customization to build opengapps
-# ----------------------------------------------------------------------
-mkdir device/sony/customization
-cat >device/sony/customization/customization.mk <<EOF
+    pushd device/sony/sepolicy
+        git fetch https://github.com/MarijnS95/device-sony-sepolicy
+        # WIP: Copy hal_thermal_default from crosshatch.
+        git cherry-pick --no-edit 6f161dcdb89ad62de58d5ec55ed73bd65e03e54d
+    popd
+
+    pushd kernel/sony/msm-4.9/kernel
+        pick_pr sony 2184 3
+    popd
+
+    # ----------------------------------------------------------------------
+    # Pull opengapps large files that are stored in git lfs
+    # ----------------------------------------------------------------------
+    for path in \
+        vendor/opengapps/sources/all \
+        vendor/opengapps/sources/arm \
+        vendor/opengapps/sources/arm64
+    do
+        pushd $path
+            git lfs pull opengapps-gitlab &
+        popd
+    done
+    wait
+
+    # ----------------------------------------------------------------------
+    # Customization to build opengapps
+    # ----------------------------------------------------------------------
+    mkdir device/sony/customization
+    cat >device/sony/customization/customization.mk <<EOF
 GAPPS_VARIANT := pico
 
 GAPPS_PRODUCT_PACKAGES += \\
@@ -273,19 +276,35 @@ GAPPS_FORCE_BROWSER_OVERRIDES := true
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 EOF
 
-put_gapps_apk TrichromeLibraryPlayStore.apk vendor/opengapps/sources/arm64/app/com.google.android.trichromelibrary/29/nodpi
+    put_gapps_apk TrichromeLibraryPlayStore.apk vendor/opengapps/sources/arm64/app/com.google.android.trichromelibrary/29/nodpi
+}
 
-. build/envsetup.sh
-lunch $LUNCH_CHOICE
+build() {
+    . build/envsetup.sh
+    lunch $LUNCH_CHOICE
 
-make clean
+    make clean
 
-pushd kernel/sony/msm-4.9/common-kernel
-    PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
-    sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
-    sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-gcc.sh
-    find . -name "*dtb*" -exec rm "{}" \;
-    bash ./build-kernels-gcc.sh
-popd
+    pushd kernel/sony/msm-4.9/common-kernel
+        PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
+        sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
+        sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-gcc.sh
+        find . -name "*dtb*" -exec rm "{}" \;
+        bash ./build-kernels-gcc.sh
+    popd
 
-make -j`nproc --all`
+    make -j`nproc --all`
+}
+
+# ----------------------------------------------------------------------
+# Main
+# ----------------------------------------------------------------------
+cd $SOURCE
+
+ANDROID_VERSION=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
+
+clean
+patch_manifests
+repo_update
+post_update
+build
