@@ -81,29 +81,6 @@ patch_manifests() {
         git clean -d -f
         git checkout .
         git pull
-
-        # ----------------------------------------------------------------------
-        # Include opengapps repos
-        # ----------------------------------------------------------------------
-    patch -p1 <<EOF
-diff --git a/default.xml b/default.xml
-index 18983252..134ba366 100644
---- a/default.xml
-+++ b/default.xml
-@@ -768,4 +768,12 @@
-
-   <repo-hooks in-project="platform/tools/repohooks" enabled-list="pre-upload" />
-
-+  <remote name="opengapps" fetch="https://github.com/opengapps/" />
-+  <remote name="opengapps-gitlab" fetch="https://gitlab.opengapps.org/opengapps/" />
-+
-+  <project path="vendor/opengapps/build" name="aosp_build" revision="master" remote="opengapps" />
-+  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="master" remote="opengapps-gitlab" />
-+  <!-- arm64 depends on arm -->
-+  <project path="vendor/opengapps/sources/arm" name="arm" clone-depth="1" revision="master" remote="opengapps-gitlab" />
-+  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="master" remote="opengapps-gitlab" />
- </manifest>
-EOF
     popd
 
     # ----------------------------------------------------------------------
@@ -170,6 +147,23 @@ EOF
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/fw-api" name="vendor-qcom-opensource-wlan-fw-api" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/qca-wifi-host-cmn" name="vendor-qcom-opensource-wlan-qca-wifi-host-cmn" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/qcacld-3.0" name="vendor-qcom-opensource-wlan-qcacld-3.0" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
+</manifest>
+EOF
+
+        # ----------------------------------------------------------------------
+        # Opengapps
+        # ----------------------------------------------------------------------
+        cat >opengapps.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="opengapps" fetch="https://github.com/opengapps/" />
+  <remote name="opengapps-gitlab" fetch="https://gitlab.opengapps.org/opengapps/" />
+
+  <project path="vendor/opengapps/build" name="aosp_build" revision="master" remote="opengapps" />
+  <project path="vendor/opengapps/sources/all" name="all" clone-depth="1" revision="master" remote="opengapps-gitlab" />
+  <!-- arm64 depends on arm -->
+  <project path="vendor/opengapps/sources/arm" name="arm" clone-depth="1" revision="master" remote="opengapps-gitlab" />
+  <project path="vendor/opengapps/sources/arm64" name="arm64" clone-depth="1" revision="master" remote="opengapps-gitlab" />
 </manifest>
 EOF
     popd
