@@ -2,13 +2,13 @@
 set -e
 
 # ----------------------------------------------------------------------
-# Variables have to be adjusted accordingly
+# Variables that can be overriden by caller
 # ----------------------------------------------------------------------
-SOURCE=~/android/source
-APK_DIR=~/android/apk
-LUNCH_CHOICE=aosp_g8441-userdebug
-PLATFORM=yoshino
-DEVICE=lilac
+SOURCE=${SOURCE:-~/android/source}
+APK_DIR=${APK_DIR:-~/android/apk}
+LUNCH_CHOICE=${LUNCH_CHOICE:-aosp_g8441-userdebug}
+PLATFORM=${PLATFORM:-yoshino}
+DEVICE=${DEVICE:-lilac}
 # ----------------------------------------------------------------------
 
 _pick_pr() {
