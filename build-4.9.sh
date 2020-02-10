@@ -12,33 +12,33 @@ DEVICE=${DEVICE:-lilac}
 # ----------------------------------------------------------------------
 
 _pick_pr() {
-    local REMOTE=$1
-    local PR_ID=$2
-    local COMMITS=$3
-    local MAX_COMMITS=$4
-    local INDEX=$(($COMMITS - 1))
-    local COUNT=0
+    local _remote=$1
+    local _pr_id=$2
+    local _commits=$3
+    local _max_commits=$4
+    local _index=$(($_commits - 1))
+    local _count=0
 
-    if [ -z $MAX_COMMITS ]; then
-        MAX_COMMITS=$COMMITS
+    if [ -z $_max_commits ]; then
+        _max_commits=$_commits
     fi
 
-    git fetch $REMOTE pull/$PR_ID/head
+    git fetch $_remote pull/$_pr_id/head
 
-    while [ $INDEX -ge 0 -a $COUNT -lt $MAX_COMMITS ]; do
-        git cherry-pick -Xtheirs --no-edit FETCH_HEAD~$INDEX
-        INDEX=$(($INDEX - 1))
-        COUNT=$(($COUNT + 1))
+    while [ $_index -ge 0 -a $_count -lt $_max_commits ]; do
+        git cherry-pick -Xtheirs --no-edit FETCH_HEAD~$_index
+        _index=$(($_index - 1))
+        _count=$(($_count + 1))
     done
 }
 
 _put_gapps_apk() {
-    local APK_NAME=$1
-    local TARGET_DIR=$2
-    local VERSION=`aapt dump badging $APK_DIR/$APK_NAME |grep versionCode=|sed "s#.*versionCode='\([[:digit:]]*\).*#\1#1"`
-    mkdir -p $TARGET_DIR
-    rm $TARGET_DIR/*
-    cp $APK_DIR/$APK_NAME $TARGET_DIR/$VERSION.apk
+    local _apk_name=$1
+    local _target_dir=$2
+    local _version=`aapt dump badging $APK_DIR/$_apk_name |grep versionCode=|sed "s#.*versionCode='\([[:digit:]]*\).*#\1#1"`
+    mkdir -p $_target_dir
+    rm $_target_dir/*
+    cp $APK_DIR/$_apk_name $_target_dir/$_version.apk
 }
 
 _clean()  {
@@ -50,7 +50,7 @@ _clean()  {
         rm -r device/sony/customization
     fi
 
-    for path in \
+    for _path in \
         device/sony/$PLATFORM \
         device/sony/common \
         device/sony/sepolicy \
@@ -64,10 +64,10 @@ _clean()  {
         vendor/oss/transpower \
         vendor/qcom/opensource/location
     do
-        if [ -d $path ]; then
-            pushd $path
+        if [ -d $_path ]; then
+            pushd $_path
                 git clean -d -f -e "*dtb*"
-                git reset --hard m/$ANDROID_VERSION
+                git reset --hard m/$_android_version
             popd
         fi
     done
@@ -89,7 +89,7 @@ _patch_manifests() {
     pushd .repo/local_manifests
         git clean -d -f
         git fetch
-        git reset --hard origin/$ANDROID_VERSION
+        git reset --hard origin/$_android_version
         rm LA.UM.7.1.r1.xml
 
         # qcom: Switch SM8150 media HAL to LA.UM.8.1.r1 codebase
@@ -182,9 +182,9 @@ _post_update() {
         sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
 
         # ueventd: Fix Tri-LED path permissions
-        TRI_LED_COMMIT=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
-        if [ -n "$TRI_LED_COMMIT" ]; then
-            git revert --no-edit $TRI_LED_COMMIT
+        _tri_led_commit=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
+        if [ -n "$_tri_led_commit" ]; then
+            git revert --no-edit $_tri_led_commit
         fi
     popd
 
@@ -241,12 +241,12 @@ EOF
     # ----------------------------------------------------------------------
     # Pull opengapps large files that are stored in git lfs
     # ----------------------------------------------------------------------
-    for path in \
+    for _path in \
         vendor/opengapps/sources/all \
         vendor/opengapps/sources/arm \
         vendor/opengapps/sources/arm64
     do
-        pushd $path
+        pushd $_path
             git lfs pull opengapps-gitlab &
         popd
     done
@@ -280,9 +280,9 @@ _build() {
     make clean
 
     pushd kernel/sony/msm-4.9/common-kernel
-        PLATFORM_UPPER=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
+        _platform_upper=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
         sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-gcc.sh
-        sed -i "s/$PLATFORM_UPPER=.*/$PLATFORM_UPPER=$DEVICE/1" build-kernels-gcc.sh
+        sed -i "s/$_platform_upper=.*/$_platform_upper=$DEVICE/1" build-kernels-gcc.sh
         find . -name "*dtb*" -exec rm "{}" \;
         bash ./build-kernels-gcc.sh
     popd
@@ -295,7 +295,7 @@ _build() {
 # ----------------------------------------------------------------------
 cd $SOURCE
 
-ANDROID_VERSION=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
+_android_version=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
 _clean
 _patch_manifests
