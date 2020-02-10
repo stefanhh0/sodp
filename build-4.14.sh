@@ -11,7 +11,7 @@ PLATFORM=yoshino
 DEVICE=lilac
 # ----------------------------------------------------------------------
 
-pick_pr() {
+_pick_pr() {
     local REMOTE=$1
     local PR_ID=$2
     local COMMITS=$3
@@ -32,7 +32,7 @@ pick_pr() {
     done
 }
 
-put_gapps_apk() {
+_put_gapps_apk() {
     local APK_NAME=$1
     local TARGET_DIR=$2
     local VERSION=`aapt dump badging $APK_DIR/$APK_NAME |grep versionCode=|sed "s#.*versionCode='\([[:digit:]]*\).*#\1#1"`
@@ -41,7 +41,7 @@ put_gapps_apk() {
     cp $APK_DIR/$APK_NAME $TARGET_DIR/$VERSION.apk
 }
 
-clean()  {
+_clean()  {
     if [ -d kernel/sony/msm-4.9 ]; then
         rm -r kernel/sony/msm-4.9
     fi
@@ -75,7 +75,7 @@ clean()  {
     done
 }
 
-patch_manifests() {
+_patch_manifests() {
     # ----------------------------------------------------------------------
     # Manifest adjustments
     # ----------------------------------------------------------------------
@@ -112,11 +112,11 @@ EOF
     popd
 }
 
-repo_update() {
+_repo_update() {
     ./repo_update.sh
 }
 
-post_update() {
+_post_update() {
     pushd device/sony/common
         git fetch https://github.com/MarijnS95/device-sony-common
         # common-packages: Include default thermal hw module.
@@ -161,10 +161,10 @@ GAPPS_FORCE_BROWSER_OVERRIDES := true
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 EOF
 
-    put_gapps_apk TrichromeLibraryPlayStore.apk vendor/opengapps/sources/arm64/app/com.google.android.trichromelibrary/29/nodpi
+    _put_gapps_apk TrichromeLibraryPlayStore.apk vendor/opengapps/sources/arm64/app/com.google.android.trichromelibrary/29/nodpi
 }
 
-build() {
+_build() {
     . build/envsetup.sh
     lunch $LUNCH_CHOICE
 
@@ -196,8 +196,8 @@ cd $SOURCE
 
 ANDROID_VERSION=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
-clean
-patch_manifests
-repo_update
-post_update
-build
+_clean
+_patch_manifests
+_repo_update
+_post_update
+_build

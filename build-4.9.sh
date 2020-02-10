@@ -11,7 +11,7 @@ PLATFORM=yoshino
 DEVICE=lilac
 # ----------------------------------------------------------------------
 
-pick_pr() {
+_pick_pr() {
     local REMOTE=$1
     local PR_ID=$2
     local COMMITS=$3
@@ -32,7 +32,7 @@ pick_pr() {
     done
 }
 
-put_gapps_apk() {
+_put_gapps_apk() {
     local APK_NAME=$1
     local TARGET_DIR=$2
     local VERSION=`aapt dump badging $APK_DIR/$APK_NAME |grep versionCode=|sed "s#.*versionCode='\([[:digit:]]*\).*#\1#1"`
@@ -41,7 +41,7 @@ put_gapps_apk() {
     cp $APK_DIR/$APK_NAME $TARGET_DIR/$VERSION.apk
 }
 
-clean()  {
+_clean()  {
     if [ -d kernel/sony/msm-4.14 ]; then
         rm -r kernel/sony/msm-4.14
     fi
@@ -73,7 +73,7 @@ clean()  {
     done
 }
 
-patch_manifests() {
+_patch_manifests() {
     # ----------------------------------------------------------------------
     # Manifest adjustments
     # ----------------------------------------------------------------------
@@ -169,11 +169,11 @@ EOF
     popd
 }
 
-repo_update() {
+_repo_update() {
     ./repo_update.sh
 }
 
-post_update() {
+_post_update() {
     if [ -d kernel/sony/msm-4.14 ]; then
         rm -r kernel/sony/msm-4.14
     fi
@@ -190,7 +190,7 @@ post_update() {
 
     pushd device/sony/common
         #TEMP: Kernel 4.9 backward compat
-        pick_pr sony 666 1
+        _pick_pr sony 666 1
 
         # revert switch to legacy lights
         patch -p1 <<EOF
@@ -235,7 +235,7 @@ EOF
     popd
 
     pushd kernel/sony/msm-4.9/kernel
-        pick_pr sony 2184 3
+        _pick_pr sony 2184 3
     popd
 
     # ----------------------------------------------------------------------
@@ -270,10 +270,10 @@ GAPPS_FORCE_BROWSER_OVERRIDES := true
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 EOF
 
-    put_gapps_apk TrichromeLibraryPlayStore.apk vendor/opengapps/sources/arm64/app/com.google.android.trichromelibrary/29/nodpi
+    _put_gapps_apk TrichromeLibraryPlayStore.apk vendor/opengapps/sources/arm64/app/com.google.android.trichromelibrary/29/nodpi
 }
 
-build() {
+_build() {
     . build/envsetup.sh
     lunch $LUNCH_CHOICE
 
@@ -297,8 +297,8 @@ cd $SOURCE
 
 ANDROID_VERSION=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
-clean
-patch_manifests
-repo_update
-post_update
-build
+_clean
+_patch_manifests
+_repo_update
+_post_update
+_build
