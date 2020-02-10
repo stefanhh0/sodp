@@ -181,7 +181,7 @@ build() {
 
         make -j`nproc --all` bootimage
 
-        pushd out/target/product/lilac
+        pushd out/target/product/$DEVICE
             cp -a boot.img boot-${COMPILER}.img
         popd
     done
