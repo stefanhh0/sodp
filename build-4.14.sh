@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eu
 
 # ----------------------------------------------------------------------
 # Variables that can be overriden by caller
@@ -161,8 +161,10 @@ EOF
 }
 
 _build() {
+    set +u # prevent envsetup and lunch from failing because of unset variables
     . build/envsetup.sh
     lunch $LUNCH_CHOICE
+    set -u
 
     make clean
 
