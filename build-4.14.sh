@@ -13,11 +13,12 @@ DEVICE=${DEVICE:-lilac}
 
 _show_help() {
     echo "Usage:"
-    echo "  build-4.14.sh [-h|--help]"
+    echo "  build-4.14.sh [-b <manifest_branch>] [-h|--help]"
     echo ""
     echo "A script to build AOSP/SODP 10 with linux kernel 4.14 for xperia devices"
     echo ""
     echo "Options:"
+    echo "  -b <manifest_branch>    switches the repo to the specified manifest_branch, e.g. android-10.0.0_r21"
     echo "  -h|--help               display this help"
     echo ""
     echo "Script variables:"
@@ -205,6 +206,11 @@ _make() {
     make -j`nproc --all`
 }
 
+_switch_branch() {
+    echo "Switching to branch $_new_branch not yet possible, because more work required"
+    exit 1
+}
+
 _build() {
     _clean
     _patch_manifests
@@ -216,8 +222,14 @@ _build() {
 # ----------------------------------------------------------------------
 # Main
 # ----------------------------------------------------------------------
+declare _new_branch=""
+
 while (( "$#" )); do
     case $1 in
+        -b)
+            _new_branch=$2
+            shift 2
+            ;;
         -h|--help)
             _show_help
             exit 0
@@ -233,4 +245,8 @@ cd $SOURCE
 
 _current_branch=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
-_build
+if [ -z "$_new_branch" ]; then
+    _build
+else
+    _switch_branch
+fi
