@@ -158,7 +158,7 @@ GAPPS_FORCE_BROWSER_OVERRIDES := true
 EOF
 }
 
-_build() {
+_make() {
     set +u # prevent envsetup and lunch from failing because of unset variables
     . build/envsetup.sh
     lunch $LUNCH_CHOICE
@@ -196,4 +196,4 @@ _clean
 _patch_manifests
 _repo_update
 _post_update
-_build
+_make
