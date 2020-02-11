@@ -11,6 +11,26 @@ PLATFORM=${PLATFORM:-yoshino}
 DEVICE=${DEVICE:-lilac}
 # ----------------------------------------------------------------------
 
+_show_help() {
+    echo "Usage:"
+    echo "  build-4.14.sh [-h|--help]"
+    echo ""
+    echo "A script to build AOSP/SODP 10 with linux kernel 4.14 for xperia devices"
+    echo ""
+    echo "Options:"
+    echo "  -h|--help               display this help"
+    echo ""
+    echo "Script variables:"
+    echo "  SOURCE          AOSP/SODP root folder Default: $HOME/android/source"
+    echo "  APK_DIR         currently not used Default: $HOME/android/apk"
+    echo "  LUNCH_CHOICE    e.g. aosp_h3113-userdebug, aosp_h9436-userdebug,... Default: aosp_g8441-userdebug"
+    echo "  PLATFORM        e.g. nile, tama,... Default: yoshino"
+    echo "  DEVICE          e.g. pioneer, akatsuki,... Default: lilac"
+    echo ""
+    echo "To pass the variables to the script use env, e.g. for pioneer use following command:"
+    echo "  env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer $0"
+}
+
 _pick_pr() {
     local _remote=$1
     local _pr_id=$2
@@ -188,6 +208,19 @@ _make() {
 # ----------------------------------------------------------------------
 # Main
 # ----------------------------------------------------------------------
+while (( "$#" )); do
+    case $1 in
+        -h|--help)
+            _show_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown parameter: $1 for help specify -h"
+            exit 1
+            ;;
+    esac
+done
+
 cd $SOURCE
 
 _current_branch=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
