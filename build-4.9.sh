@@ -15,13 +15,9 @@ _pick_pr() {
     local _remote=$1
     local _pr_id=$2
     local _commits=${3:-1}
-    local _max_commits=$4
+    local _max_commits=${4:-$_commits}
     local _index=$(($_commits - 1))
     local _count=0
-
-    if [ -z $_max_commits ]; then
-        _max_commits=$_commits
-    fi
 
     git fetch $_remote pull/$_pr_id/head
 
