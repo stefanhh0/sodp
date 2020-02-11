@@ -186,7 +186,7 @@ _post_update() {
 
     pushd device/sony/common
         #TEMP: Kernel 4.9 backward compat
-        _pick_pr sony 666 1
+        _pick_pr sony 666
 
         # revert switch to legacy lights
         patch -p1 <<EOF
