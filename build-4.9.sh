@@ -14,7 +14,7 @@ DEVICE=${DEVICE:-lilac}
 _pick_pr() {
     local _remote=$1
     local _pr_id=$2
-    local _commits=$3
+    local _commits=${3:-1}
     local _max_commits=$4
     local _index=$(($_commits - 1))
     local _count=0
