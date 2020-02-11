@@ -65,7 +65,7 @@ _clean()  {
         if [ -d $_path ]; then
             pushd $_path
                 git clean -d -f -e "*dtb*"
-                git reset --hard m/$_android_version
+                git reset --hard m/$_current_branch
             popd
         fi
     done
@@ -87,7 +87,7 @@ _patch_manifests() {
     pushd .repo/local_manifests
         git clean -d -f
         git fetch
-        git reset --hard origin/$_android_version
+        git reset --hard origin/$_current_branch
 
         # ----------------------------------------------------------------------
         # Opengapps
@@ -190,7 +190,7 @@ _make() {
 # ----------------------------------------------------------------------
 cd $SOURCE
 
-_android_version=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
+_current_branch=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
 _clean
 _patch_manifests
