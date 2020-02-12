@@ -30,14 +30,14 @@ _show_help() {
     echo "  -h|--help               display this help"
     echo ""
     echo "Script variables:"
-    echo "  SOURCE          AOSP/SODP root folder Default: $HOME/android/source"
-    echo "  APK_DIR         currently not used Default: $HOME/android/apk"
+    echo "  SOURCE          AOSP/SODP root folder Default: ~/android/source"
+    echo "  APK_DIR         currently not used Default: ~/android/apk"
     echo "  LUNCH_CHOICE    e.g. aosp_h3113-userdebug, aosp_h9436-userdebug,... Default: aosp_g8441-userdebug"
     echo "  PLATFORM        e.g. nile, tama,... Default: yoshino"
     echo "  DEVICE          e.g. pioneer, akatsuki,... Default: lilac"
     echo ""
     echo "To pass the variables to the script use env, e.g. for pioneer use following command:"
-    echo "  env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer $0"
+    echo "  env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer ./build-4.9.sh"
 }
 
 _pick_pr() {
