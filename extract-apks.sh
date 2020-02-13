@@ -7,7 +7,7 @@ set -e
 # ----------------------------------------------------------------------
 APK_DIR=~/android/apk
 IMAGE_NAME=coral-qq1b.200105.004-factory-143dfd87.zip
-DOWNLOAD_DIR=~/android/coral
+DOWNLOAD_DIR=~/android/google-img
 # ----------------------------------------------------------------------
 
 IMAGE_FILE=$DOWNLOAD_DIR/$IMAGE_NAME
