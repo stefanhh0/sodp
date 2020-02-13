@@ -6,7 +6,7 @@ set -e
 # Variables have to be adjusted accordingly
 # ----------------------------------------------------------------------
 APK_DIR=~/android/apk
-IMAGE_NAME=coral-qq1b.200105.004-factory-143dfd87.zip
+IMAGE_NAME=coral-qq1b.200205.002-factory-89d84384.zip
 DOWNLOAD_DIR=~/android/google-img
 # ----------------------------------------------------------------------
 
