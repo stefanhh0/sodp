@@ -49,6 +49,7 @@ mkdir system
 sudo mount -o ro system.raw system
 
 for apk in $APKS; do
+    aapt dump badging .$apk|head -3
     cp -v .$apk $APK_DIR
 done
 
