@@ -205,6 +205,14 @@ _make() {
     make -j`nproc --all`
 }
 
+_build() {
+    _clean
+    _patch_manifests
+    _repo_update
+    _post_update
+    _make
+}
+
 # ----------------------------------------------------------------------
 # Main
 # ----------------------------------------------------------------------
@@ -225,8 +233,4 @@ cd $SOURCE
 
 _current_branch=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
-_clean
-_patch_manifests
-_repo_update
-_post_update
-_make
+_build
