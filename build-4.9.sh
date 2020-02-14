@@ -203,6 +203,15 @@ EOF
     popd
 }
 
+_repo_switch() {
+    repo sync -j32 --force-sync
+    repo init -b $_new_branch
+
+    pushd .repo/local_manifests
+        git checkout $_new_branch
+    popd
+}
+
 _repo_update() {
     ./repo_update.sh
 }
@@ -324,11 +333,6 @@ _make() {
     make -j`nproc --all`
 }
 
-_switch_branch() {
-    echo "Switching to branch $_new_branch not yet possible, because more work required"
-    exit 1
-}
-
 _build() {
     _clean
     _clean_manifests
@@ -337,6 +341,13 @@ _build() {
     _repo_update
     _post_update
     _make
+}
+
+_switch_branch() {
+    _clean
+    _add_opengapps
+    _repo_switch
+    _build
 }
 
 # ----------------------------------------------------------------------

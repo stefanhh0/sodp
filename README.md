@@ -29,3 +29,9 @@ To build nile, using kernel 4.9 following script call has to be done:
 ```
 env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer ./build-4.9.sh
 ```
+
+[WIP] NOT YET TESTED!!!\
+To switch to a different branch before building, call the script as follows:
+```
+./build-4.x.sh -b android-10.0.0_rXX
+```
