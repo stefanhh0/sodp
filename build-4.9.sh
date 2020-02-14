@@ -179,6 +179,11 @@ EOF
 <project path="kernel/sony/msm-4.9/kernel/drivers/staging/wlan-qc/qcacld-3.0" name="vendor-qcom-opensource-wlan-qcacld-3.0" groups="device" remote="sony" revision="aosp/LA.UM.7.3.r1" />
 </manifest>
 EOF
+    popd
+}
+
+_add_opengapps() {
+    pushd .repo/local_manifests
 
         # ----------------------------------------------------------------------
         # Opengapps
@@ -328,6 +333,7 @@ _switch_branch() {
 _build() {
     _clean
     _patch_manifests
+    _add_opengapps
     _repo_update
     _post_update
     _make

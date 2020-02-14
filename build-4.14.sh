@@ -122,6 +122,11 @@ _patch_manifests() {
         git clean -d -f
         git fetch
         git reset --hard origin/$_current_branch
+    popd
+}
+
+_add_opengapps() {
+    pushd .repo/local_manifests
 
         # ----------------------------------------------------------------------
         # Opengapps
@@ -227,6 +232,7 @@ _switch_branch() {
 _build() {
     _clean
     _patch_manifests
+    _add_opengapps
     _repo_update
     _post_update
     _make
