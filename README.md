@@ -2,6 +2,11 @@
 
 Scripts that build aosp 10 for xperia devices using linux kernel 4.9 or 4.14 and including opengapps.
 
+A usage description of the scripts can be displayed via:
+```
+build-4.x.sh -h|--help
+```
+
 Please be aware that these scripts are not appropriate for a developer aosp tree that contains
 changes but should only be used on clean trees, since the script will do things like:
 - delete files
