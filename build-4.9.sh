@@ -103,23 +103,22 @@ _clean()  {
     done
 }
 
-_patch_manifests() {
-    # ----------------------------------------------------------------------
-    # Manifest adjustments
-    # ----------------------------------------------------------------------
+_clean_manifests() {
     pushd .repo/manifests
         git clean -d -f
         git checkout .
         git pull
     popd
 
-    # ----------------------------------------------------------------------
-    # Local manifest adjustments
-    # ----------------------------------------------------------------------
     pushd .repo/local_manifests
         git clean -d -f
         git fetch
         git reset --hard origin/$_current_branch
+    popd
+}
+
+_patch_manifests() {
+    pushd .repo/local_manifests
         rm LA.UM.7.1.r1.xml
 
         # qcom: Switch SM8150 media HAL to LA.UM.8.1.r1 codebase
@@ -332,6 +331,7 @@ _switch_branch() {
 
 _build() {
     _clean
+    _clean_manifests
     _patch_manifests
     _add_opengapps
     _repo_update

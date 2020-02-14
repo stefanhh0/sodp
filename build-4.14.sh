@@ -105,19 +105,13 @@ _clean()  {
     done
 }
 
-_patch_manifests() {
-    # ----------------------------------------------------------------------
-    # Manifest adjustments
-    # ----------------------------------------------------------------------
+_clean_manifests() {
     pushd .repo/manifests
         git clean -d -f
         git checkout .
         git pull
     popd
 
-    # ----------------------------------------------------------------------
-    # Local manifest adjustments
-    # ----------------------------------------------------------------------
     pushd .repo/local_manifests
         git clean -d -f
         git fetch
@@ -231,7 +225,7 @@ _switch_branch() {
 
 _build() {
     _clean
-    _patch_manifests
+    _clean_manifests
     _add_opengapps
     _repo_update
     _post_update
