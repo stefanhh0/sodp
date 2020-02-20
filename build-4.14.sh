@@ -113,9 +113,13 @@ _clean_manifests() {
     popd
 
     pushd .repo/local_manifests
+        _local_manifests_branch=$(git symbolic-ref -q HEAD)
+        _local_manifests_branch=${_local_manifests_branch##refs/heads/}
+        _local_manifests_branch=${_local_manifests_branch:-HEAD}
+
         git clean -d -f
         git fetch
-        git reset --hard origin/$_current_branch
+        git reset --hard origin/$_local_manifests_branch
     popd
 }
 
