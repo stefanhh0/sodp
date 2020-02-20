@@ -13,7 +13,7 @@ DEVICE=${DEVICE:-lilac}
 
 _show_help() {
     echo "Usage:"
-    echo "  build-4.14.sh [-b <manifest_branch>] [-h|--help]"
+    echo "  $_shell_script [-b <manifest_branch>] [-h|--help]"
     echo ""
     echo "A script to build AOSP/SODP 10 with linux kernel 4.14 for xperia devices"
     echo ""
@@ -42,7 +42,7 @@ _show_help() {
     echo "                  Default: lilac"
     echo ""
     echo "To pass the variables to the script use env, e.g. for pioneer use following command:"
-    echo "  env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer ./build-4.14.sh"
+    echo "  env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer ./$_shell_script"
 }
 
 _pick_pr() {
@@ -246,6 +246,7 @@ _switch_branch() {
 # ----------------------------------------------------------------------
 # Main
 # ----------------------------------------------------------------------
+declare _shell_script=${0##*/}
 declare _new_branch=""
 
 while (( "$#" )); do
@@ -259,7 +260,7 @@ while (( "$#" )); do
             exit 0
             ;;
         *)
-            echo "Unknown parameter: $1 for help specify -h"
+            echo "Unknown parameter: $1 for help use $_shell_script -h"
             exit 1
             ;;
     esac
