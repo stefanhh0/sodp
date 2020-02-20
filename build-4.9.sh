@@ -13,7 +13,7 @@ DEVICE=${DEVICE:-lilac}
 
 _show_help() {
     echo "Usage:"
-    echo "  $_shell_script [-b <manifest_branch>] [-h|--help]"
+    echo "  $_shell_script [-b <manifest_branch> [-k|--keep-local]] [-h|--help]"
     echo ""
     echo "A script to build AOSP/SODP 10 with linux kernel 4.9 for xperia devices"
     echo ""
@@ -27,6 +27,7 @@ _show_help() {
     echo ""
     echo "Options:"
     echo "  -b <manifest_branch>    switches the repo to the specified manifest_branch, e.g. android-10.0.0_r21"
+    echo "  -k|--keep-local         keeps the branch for the local manifests repo when switching branches"
     echo "  -h|--help               display this help"
     echo ""
     echo "Script variables:"
@@ -209,9 +210,11 @@ _repo_switch() {
     repo sync -j32 --force-sync
     repo init -b $_new_branch
 
-    pushd .repo/local_manifests
-        git checkout $_new_branch
-    popd
+    if [ "$_keep_local" = "false" ]; then
+        pushd .repo/local_manifests
+            git checkout $_new_branch
+        popd
+    fi
 }
 
 _repo_update() {
@@ -352,12 +355,17 @@ _switch_branch() {
 # ----------------------------------------------------------------------
 declare _shell_script=${0##*/}
 declare _new_branch=""
+declare _keep_local="false"
 
 while (( "$#" )); do
     case $1 in
         -b)
             _new_branch=$2
             shift 2
+            ;;
+        -k|--keep-local)
+            _keep_local="true"
+            shift
             ;;
         -h|--help)
             _show_help
@@ -369,6 +377,11 @@ while (( "$#" )); do
             ;;
     esac
 done
+
+if [ -z "$_new_branch" -a "$_keep_local" = "true" ]; then
+    echo "-k|--keep-local can only be used with -b"
+    echo "For help use $_shell_script -h"
+fi
 
 cd $SOURCE
 
