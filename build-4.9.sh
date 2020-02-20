@@ -72,6 +72,22 @@ _put_gapps_apk() {
 }
 
 _clean()  {
+    pushd .repo/manifests
+        git clean -d -f
+        git checkout .
+        git pull
+    popd
+
+    pushd .repo/local_manifests
+        _local_manifests_branch=$(git symbolic-ref -q HEAD)
+        _local_manifests_branch=${_local_manifests_branch##refs/heads/}
+        _local_manifests_branch=${_local_manifests_branch:-HEAD}
+
+        git clean -d -f
+        git fetch
+        git reset --hard origin/$_local_manifests_branch
+    popd
+
     if [ -d kernel/sony/msm-4.14 ]; then
         rm -r kernel/sony/msm-4.14
     fi
@@ -101,24 +117,6 @@ _clean()  {
             popd
         fi
     done
-}
-
-_clean_manifests() {
-    pushd .repo/manifests
-        git clean -d -f
-        git checkout .
-        git pull
-    popd
-
-    pushd .repo/local_manifests
-        _local_manifests_branch=$(git symbolic-ref -q HEAD)
-        _local_manifests_branch=${_local_manifests_branch##refs/heads/}
-        _local_manifests_branch=${_local_manifests_branch:-HEAD}
-
-        git clean -d -f
-        git fetch
-        git reset --hard origin/$_local_manifests_branch
-    popd
 }
 
 _patch_manifests() {
@@ -335,7 +333,6 @@ _make() {
 
 _build() {
     _clean
-    _clean_manifests
     _patch_manifests
     _add_opengapps
     _repo_update
