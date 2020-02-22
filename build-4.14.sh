@@ -244,7 +244,6 @@ _switch_branch() {
     _clean
     _add_opengapps
     _repo_switch
-    _build
 }
 
 # ----------------------------------------------------------------------
@@ -284,8 +283,8 @@ cd $SOURCE
 
 _current_branch=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
-if [ -z "$_new_branch" ]; then
-    _build
-else
+if [ -n "$_new_branch" ]; then
     _switch_branch
 fi
+
+_build
