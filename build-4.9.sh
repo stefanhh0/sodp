@@ -230,16 +230,29 @@ _post_update() {
     fi
 
     pushd device/sony/$PLATFORM
-        sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
-
         # ueventd: Fix Tri-LED path permissions
         _tri_led_commit=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
         if [ -n "$_tri_led_commit" ]; then
             git revert --no-edit $_tri_led_commit
         fi
+
+        sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
     popd
 
     pushd device/sony/common
+        # remove the no-op Android.bp
+        git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
+
+        # PowerHAL: power-helper: Fix WLAN STATS file path for k4.14
+        git revert --no-edit d3cbedf701aa8ab1ed7d571b5fb384665c92df03
+
+        # liblights: Migrate to kernel 4.14 LED class for RGB tri-led
+        git revert --no-edit 8b79a2321abe42c9d13540651cbf8a276ec7a2f1
+
+        git fetch https://github.com/MarijnS95/device-sony-common
+        # common-packages: Include default thermal hw module.
+        git cherry-pick --no-edit bccbb5d57ea6605f7f814e547e46c32257c4b193
+
         #TEMP: Kernel 4.9 backward compat
         _pick_pr sony 666
 
@@ -264,19 +277,6 @@ index 44c1f69..09eda13 100644
  # Health
  PRODUCT_PACKAGES += \\
 EOF
-
-        # remove the no-op Android.bp
-        git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
-
-        # PowerHAL: power-helper: Fix WLAN STATS file path for k4.14
-        git revert --no-edit d3cbedf701aa8ab1ed7d571b5fb384665c92df03
-
-        # liblights: Migrate to kernel 4.14 LED class for RGB tri-led
-        git revert --no-edit 8b79a2321abe42c9d13540651cbf8a276ec7a2f1
-
-        git fetch https://github.com/MarijnS95/device-sony-common
-        # common-packages: Include default thermal hw module.
-        git cherry-pick --no-edit bccbb5d57ea6605f7f814e547e46c32257c4b193
     popd
 
     pushd device/sony/sepolicy
