@@ -124,6 +124,9 @@ _patch_manifests() {
     pushd .repo/local_manifests
         rm LA.UM.7.1.r1.xml
 
+        # qcom: Switch display interfaces and HAL to LA.UM.8.1.r1 codebase.
+        git revert -Xtheirs --no-edit a1f6ee7141059654684c902f34e3c2e2f6fd5595
+
         # qcom: Switch SM8150 media HAL to LA.UM.8.1.r1 codebase
         git revert --no-edit f9c8739551420d17858387148e7c880e86668a26
 
@@ -280,6 +283,12 @@ EOF
         git fetch https://github.com/MarijnS95/device-sony-sepolicy
         # WIP: Copy hal_thermal_default from crosshatch.
         git cherry-pick --no-edit 6f161dcdb89ad62de58d5ec55ed73bd65e03e54d
+    popd
+
+    pushd hardware/qcom
+        if [ -d sm8150 ]; then
+            rm -rf sm8150
+        fi
     popd
 
     # ----------------------------------------------------------------------
