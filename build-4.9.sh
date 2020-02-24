@@ -240,6 +240,9 @@ _post_update() {
     popd
 
     pushd device/sony/common
+        # treble/vintf: Bump graphics.composer to version 2.3.
+        git revert --no-edit 0634f99808583bac9586649da024c1e24d14964b
+
         # remove the no-op Android.bp
         git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
 
