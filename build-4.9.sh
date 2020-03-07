@@ -396,7 +396,7 @@ fi
 
 cd $SOURCE
 
-_current_branch=`cat .repo/manifest.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
+_current_branch=`cat .repo/manifests/default.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
 if [ -n "$_new_branch" ]; then
     _switch_branch
