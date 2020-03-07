@@ -238,9 +238,9 @@ _post_update() {
 
     pushd device/sony/$PLATFORM
         # ueventd: Fix Tri-LED path permissions
-        _tri_led_commit=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
-        if [ -n "$_tri_led_commit" ]; then
-            git revert --no-edit $_tri_led_commit
+        _found_commit=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
+        if [ -n "$_found_commit" ]; then
+            git revert --no-edit $_found_commit
         fi
 
         sed -i 's/SOMC_KERNEL_VERSION := .*/SOMC_KERNEL_VERSION := 4.9/1' platform.mk
