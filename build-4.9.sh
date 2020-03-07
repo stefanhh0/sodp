@@ -174,6 +174,25 @@ index 87a3f9c..81964a8 100644
  </manifest>
 EOF
 
+        # device-sony: q-mr1-legacy
+        patch -p1 <<EOF
+diff --git a/devices.xml b/devices.xml
+index ae6fff0..c5fd74b 100644
+--- a/devices.xml
++++ b/devices.xml
+@@ -1,8 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <manifest>
+ <remote name="sony" fetch="https://github.com/sonyxperiadev/" />
+-<project path="device/sony/sepolicy" name="device-sony-sepolicy" groups="device" remote="sony" revision="master" />
+-<project path="device/sony/common" name="device-sony-common" groups="device" remote="sony" revision="master" >
++<project path="device/sony/sepolicy" name="device-sony-sepolicy" groups="device" remote="sony" revision="q-mr1-legacy" />
++<project path="device/sony/common" name="device-sony-common" groups="device" remote="sony" revision="q-mr1-legacy" >
+   <linkfile src="misc/no-op/Android.mk" dest="hardware/qcom/sdm845/Android.mk" />
+ </project>
+
+EOF
+
         # ----------------------------------------------------------------------
         # 4.9 kernel-repos
         # ----------------------------------------------------------------------
@@ -253,52 +272,9 @@ _post_update() {
     popd
 
     pushd device/sony/common
-        # add SSC sensors configuration
-        git revert --no-edit c16f1f2d9604f49f96fa7136c43d68d8fd62db38
-
-        # move sensor settings to platforms
-        git revert --no-edit 9c50d4f6b5e150029c7f9fc9092ddb743856b697
-
-        # treble/vintf: Bump graphics.composer to version 2.3.
-        git revert --no-edit 0634f99808583bac9586649da024c1e24d14964b
-
-        # remove the no-op Android.bp
-        git revert --no-edit fd3e6c8c993d3aa7ef7ae9856d37dc09d4bbcf3f
-
-        # PowerHAL: power-helper: Fix WLAN STATS file path for k4.14
-        git revert --no-edit d3cbedf701aa8ab1ed7d571b5fb384665c92df03
-
-        # liblights: Migrate to kernel 4.14 LED class for RGB tri-led
-        git revert --no-edit 8b79a2321abe42c9d13540651cbf8a276ec7a2f1
-
         git fetch https://github.com/MarijnS95/device-sony-common
         # common-packages: Include default thermal hw module.
         git cherry-pick --no-edit 1f4326742842c4278c53f96dc649cd6488454967
-
-        #TEMP: Kernel 4.9 backward compat
-        _pick_pr sony 666
-
-        # revert switch to legacy lights
-        patch -p1 <<EOF
-diff --git a/common-treble.mk b/common-treble.mk
-index 44c1f69..09eda13 100644
---- a/common-treble.mk
-+++ b/common-treble.mk
-@@ -73,13 +73,8 @@ PRODUCT_PACKAGES += \\
-     android.hardware.gnss@1.1-service-qti
-
- # Light
--ifeq (\$(SOMC_KERNEL_VERSION),4.14)
- PRODUCT_PACKAGES += \\
-     android.hardware.light@2.0-service.sony
--else
--PRODUCT_PACKAGES += \\
--    android.hardware.light@2.0-service.sony.legacy
--endif
-
- # Health
- PRODUCT_PACKAGES += \\
-EOF
     popd
 
     pushd device/sony/sepolicy
