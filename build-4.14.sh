@@ -73,6 +73,13 @@ _put_gapps_apk() {
 }
 
 _clean()  {
+    local _opt=${1:-none}
+
+    _clean_opts="-e *dtb*"
+    if [ $_opt = "all" ]; then
+        _clean_opts=""
+    fi
+
     pushd .repo/manifests
         git clean -d -f
         git checkout .
@@ -115,7 +122,7 @@ _clean()  {
     do
         if [ -d $_path ]; then
             pushd $_path
-                git clean -d -f -e "*dtb*"
+                git clean -d -f $_clean_opts
                 git reset --hard m/$_current_branch
             popd
         fi
@@ -241,7 +248,7 @@ _build() {
 }
 
 _switch_branch() {
-    _clean
+    _clean all
     _add_opengapps
     _repo_switch
 }
