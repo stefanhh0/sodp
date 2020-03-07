@@ -237,6 +237,12 @@ _post_update() {
     fi
 
     pushd device/sony/$PLATFORM
+        # move sensor config to each platform
+        _found_commit=`git log --pretty=format:"%H %s"|grep "move sensor config to each platform" |awk '{print $1}'`
+        if [ -n "$_found_commit" ]; then
+            git revert --no-edit $_found_commit
+        fi
+
         # ueventd: Fix Tri-LED path permissions
         _found_commit=`git log --pretty=format:"%H %s"|grep "ueventd: Fix Tri-LED path permissions" |awk '{print $1}'`
         if [ -n "$_found_commit" ]; then
@@ -247,6 +253,12 @@ _post_update() {
     popd
 
     pushd device/sony/common
+        # add SSC sensors configuration
+        git revert --no-edit c16f1f2d9604f49f96fa7136c43d68d8fd62db38
+
+        # move sensor settings to platforms
+        git revert --no-edit 9c50d4f6b5e150029c7f9fc9092ddb743856b697
+
         # treble/vintf: Bump graphics.composer to version 2.3.
         git revert --no-edit 0634f99808583bac9586649da024c1e24d14964b
 
