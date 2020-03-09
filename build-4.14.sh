@@ -179,6 +179,12 @@ _post_update() {
         git cherry-pick --no-edit 2f8a95e5165a0f66030d941b1ddd73ad4d1e91ea
     popd
 
+    pushd vendor/qcom/opensource
+        if [ -h Android.bp ]; then
+            rm Android.bp
+        fi
+    popd
+
     # ----------------------------------------------------------------------
     # Pull opengapps large files that are stored in git lfs
     # ----------------------------------------------------------------------
