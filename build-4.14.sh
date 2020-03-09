@@ -220,21 +220,13 @@ _make() {
 
     make clean
 
-    for _compiler in gcc clang; do
-        pushd kernel/sony/msm-4.14/common-kernel
-            _platform_upper=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
-            sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-${_compiler}.sh
-            sed -i "s/$_platform_upper=.*/$_platform_upper=$DEVICE/1" build-kernels-${_compiler}.sh
-            find . -name "*dtb*" -exec rm "{}" \;
-            bash ./build-kernels-${_compiler}.sh
-        popd
-
-        make -j`nproc --all` bootimage
-
-        pushd out/target/product/$DEVICE
-            cp -a boot.img boot-${_compiler}.img
-        popd
-    done
+    pushd kernel/sony/msm-4.14/common-kernel
+        _platform_upper=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
+        sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-clang.sh
+        sed -i "s/$_platform_upper=.*/$_platform_upper=$DEVICE/1" build-kernels-clang.sh
+        find . -name "*dtb*" -exec rm "{}" \;
+        bash ./build-kernels-clang.sh
+    popd
 
     make -j`nproc --all`
 }
