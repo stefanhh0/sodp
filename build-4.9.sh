@@ -264,15 +264,15 @@ _post_update() {
     popd
 
     pushd device/sony/common
-        git fetch https://github.com/MarijnS95/device-sony-common
+        git fetch https://github.com/stefanhh0/device-sony-common q-mr1-legacy
         # common-packages: Include default thermal hw module.
-        git cherry-pick --no-edit 1f4326742842c4278c53f96dc649cd6488454967
+        git cherry-pick --no-edit 9e84337598ccc8d5af56267d448ac5b30b916e30
     popd
 
     pushd device/sony/sepolicy
-        git fetch https://github.com/MarijnS95/device-sony-sepolicy
+        git fetch https://github.com/stefanhh0/device-sony-sepolicy q-mr1-legacy
         # WIP: Copy hal_thermal_default from crosshatch.
-        git cherry-pick --no-edit 2f8a95e5165a0f66030d941b1ddd73ad4d1e91ea
+        git cherry-pick --no-edit cb62eaecd7b561b3bf83c8240f99c1ea21d151a6
     popd
 
     pushd hardware/qcom
