@@ -124,6 +124,9 @@ _patch_manifests() {
     pushd .repo/local_manifests
         rm LA.UM.7.1.r1.xml
 
+        # qcom: Switch camera to new HAL.
+        git revert --no-edit a96f3a8e384fcbe569e4526e7aa0d020904adbfb
+
         # qcom: Switch display interfaces and HAL to LA.UM.8.1.r1 codebase.
         git revert -Xtheirs --no-edit a1f6ee7141059654684c902f34e3c2e2f6fd5595
 
