@@ -252,9 +252,9 @@ _post_update() {
 
     pushd device/sony/$PLATFORM
         # move sensor config to each platform
-        _found_commit=`git log --pretty=format:"%H %s"|grep "move sensor config to each platform" |awk '{print $1}'`
-        if [ -n "$_found_commit" ]; then
-            git revert --no-edit $_found_commit
+        _found_sensor_commit=`git log --pretty=format:"%H %s"|grep "move sensor config to each platform" |awk '{print $1}'`
+        if [ -n "$_found_sensor_commit" ]; then
+            git revert --no-edit $_found_sensor_commit
         fi
 
         # ueventd: Fix Tri-LED path permissions
@@ -267,6 +267,11 @@ _post_update() {
     popd
 
     pushd device/sony/common
+        if [ -n "$_found_sensor_commit" ]; then
+            # [q-mr1] Move sensors_settings to platforms
+            git revert --no-edit f08af4ce8bb1864c85e3f07cb1d2e3173f89cf66
+        fi
+
         git fetch https://github.com/stefanhh0/device-sony-common q-mr1-legacy
         # common-packages: Include default thermal hw module.
         git cherry-pick --no-edit 9e84337598ccc8d5af56267d448ac5b30b916e30
