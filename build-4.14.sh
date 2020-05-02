@@ -101,6 +101,10 @@ _clean()  {
         rm -r device/sony/customization
     fi
 
+    if [ -h vendor/qcom/opensource/Android.bp ]; then
+        rm vendor/qcom/opensource/Android.bp
+    fi
+
     for _path in \
         device/sony/$PLATFORM \
         device/sony/common \
@@ -170,12 +174,6 @@ _post_update() {
         git fetch https://github.com/stefanhh0/device-sony-sepolicy q-mr1-legacy
         # WIP: Copy hal_thermal_default from crosshatch.
         git cherry-pick --no-edit cb62eaecd7b561b3bf83c8240f99c1ea21d151a6
-    popd
-
-    pushd vendor/qcom/opensource
-        if [ -h Android.bp ]; then
-            rm Android.bp
-        fi
     popd
 
     # ----------------------------------------------------------------------
