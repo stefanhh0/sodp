@@ -165,18 +165,8 @@ _repo_update() {
 
 _post_update() {
     pushd device/sony/common
-        git fetch https://github.com/stefanhh0/device-sony-common q-mr1-legacy
-        # common-packages: Include default thermal hw module.
-        git cherry-pick --no-edit 9e84337598ccc8d5af56267d448ac5b30b916e30
-
         # common-prop: Disable PartyCrasher - don't reboot to recovery for wipe
         _pick_pr sony 722
-    popd
-
-    pushd device/sony/sepolicy
-        git fetch https://github.com/stefanhh0/device-sony-sepolicy q-mr1-legacy
-        # WIP: Copy hal_thermal_default from crosshatch.
-        git cherry-pick --no-edit cb62eaecd7b561b3bf83c8240f99c1ea21d151a6
     popd
 
     # ----------------------------------------------------------------------
