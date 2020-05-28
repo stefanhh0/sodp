@@ -221,7 +221,7 @@ _make() {
         _platform_upper=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
         sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-clang.sh
         sed -i "s/$_platform_upper=.*/$_platform_upper=$DEVICE/1" build-kernels-clang.sh
-        find . -name "*dtb*" -exec rm "{}" \;
+        find . -name "*$DEVICE*" -exec rm "{}" \;
         bash ./build-kernels-clang.sh
     popd
 
