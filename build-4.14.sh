@@ -164,11 +164,6 @@ _repo_update() {
 }
 
 _post_update() {
-    pushd device/sony/common
-        # common-prop: Disable PartyCrasher - don't reboot to recovery for wipe
-        _pick_pr sony 722
-    popd
-
     # ----------------------------------------------------------------------
     # Pull opengapps large files that are stored in git lfs
     # ----------------------------------------------------------------------
