@@ -194,6 +194,8 @@ GAPPS_FORCE_WEBVIEW_OVERRIDES := true
 GAPPS_FORCE_BROWSER_OVERRIDES := true
 
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
+
+BOARD_USE_ENFORCING_SELINUX := true
 EOF
 }
 
