@@ -29,6 +29,8 @@ _show_help() {
     echo "  -b <manifest_branch>    switches the repo to the specified manifest_branch, e.g. android-10.0.0_r21"
     echo "  -k|--keep-local         keeps the branch for the local manifests repo when switching branches"
     echo "  -h|--help               display this help"
+    echo "  -x|--exclude-gapps      excludes opengapps from the build and implicitly removes the opengapps"
+    echo "                          repos from the source tree"
     echo ""
     echo "Script variables:"
     echo "  SOURCE          AOSP/SODP root folder"
@@ -211,12 +213,12 @@ EOF
     popd
 }
 
-_add_opengapps() {
-    pushd .repo/local_manifests
+_init_opengapps() {
+    if $_exclude_gapps; then
+        return
+    fi
 
-        # ----------------------------------------------------------------------
-        # Opengapps
-        # ----------------------------------------------------------------------
+    pushd .repo/local_manifests
         cat >opengapps.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
@@ -292,9 +294,15 @@ _post_update() {
         fi
     popd
 
-    # ----------------------------------------------------------------------
-    # Pull opengapps large files that are stored in git lfs
-    # ----------------------------------------------------------------------
+    _pull_opengapps
+    _customize_build
+}
+
+_pull_opengapps() {
+    if $_exclude_gapps; then
+        return
+    fi
+
     for _path in \
         vendor/opengapps/sources/all \
         vendor/opengapps/sources/arm \
@@ -305,12 +313,12 @@ _post_update() {
         popd
     done
     wait
+}
 
-    # ----------------------------------------------------------------------
-    # Customization to build opengapps
-    # ----------------------------------------------------------------------
+_customize_build() {
     mkdir device/sony/customization
-    cat >device/sony/customization/customization.mk <<EOF
+    if ! $_exclude_gapps; then
+        cat >device/sony/customization/customization.mk <<EOF
 GAPPS_VARIANT := pico
 
 GAPPS_PRODUCT_PACKAGES += \\
@@ -323,6 +331,10 @@ GAPPS_FORCE_BROWSER_OVERRIDES := true
 
 \$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 
+EOF
+    fi
+
+    cat >>device/sony/customization/customization.mk <<EOF
 BOARD_USE_ENFORCING_SELINUX := true
 EOF
 }
@@ -349,7 +361,7 @@ _make() {
 _build() {
     _clean
     _patch_manifests
-    _add_opengapps
+    _init_opengapps
     _repo_update
     _post_update
     _make
@@ -357,7 +369,7 @@ _build() {
 
 _switch_branch() {
     _clean
-    _add_opengapps
+    _init_opengapps
     _repo_switch
 }
 
@@ -367,6 +379,7 @@ _switch_branch() {
 declare _shell_script=${0##*/}
 declare _new_branch=""
 declare _keep_local="false"
+declare _exclude_gapps="false"
 
 while (( "$#" )); do
     case $1 in
@@ -376,6 +389,10 @@ while (( "$#" )); do
             ;;
         -k|--keep-local)
             _keep_local="true"
+            shift
+            ;;
+        -x|--exclude-gapps)
+            _exclude_gapps="true"
             shift
             ;;
         -h|--help)
