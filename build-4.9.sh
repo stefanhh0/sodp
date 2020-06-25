@@ -345,7 +345,11 @@ _make() {
     lunch $LUNCH_CHOICE
     set -u
 
-    make clean
+    if [ -n "$_new_branch" ]; then
+        make clean
+    else
+        make installclean
+    fi
 
     pushd kernel/sony/msm-4.9/common-kernel
         _platform_upper=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
