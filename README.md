@@ -21,13 +21,11 @@ The value after the colon is the default value.
 ```
 SOURCE=${SOURCE:-~/android/source}
 LUNCH_CHOICE=${LUNCH_CHOICE:-aosp_g8441-userdebug}
-PLATFORM=${PLATFORM:-yoshino}
-DEVICE=${DEVICE:-lilac}
 ```
 
 To build nile, using kernel 4.9 following script call has to be done:
 ```
-env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer ./build-4.9.sh
+env LUNCH_CHOICE=aosp_h3113-userdebug ./build-4.9.sh
 ```
 
 To switch to a different branch before building, call the script as follows:

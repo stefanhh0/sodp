@@ -7,8 +7,6 @@ set -eu
 SOURCE=${SOURCE:-~/android/source}
 APK_DIR=${APK_DIR:-~/android/apk}
 LUNCH_CHOICE=${LUNCH_CHOICE:-aosp_g8441-userdebug}
-PLATFORM=${PLATFORM:-yoshino}
-DEVICE=${DEVICE:-lilac}
 # ----------------------------------------------------------------------
 
 _show_help() {
@@ -39,13 +37,9 @@ _show_help() {
     echo "                  Default: ~/android/apk"
     echo "  LUNCH_CHOICE    e.g. aosp_h3113-userdebug, aosp_h9436-userdebug,..."
     echo "                  Default: aosp_g8441-userdebug"
-    echo "  PLATFORM        e.g. nile, tama,..."
-    echo "                  Default: yoshino"
-    echo "  DEVICE          e.g. pioneer, akatsuki,..."
-    echo "                  Default: lilac"
     echo ""
     echo "To pass the variables to the script use env, e.g. for pioneer use following command:"
-    echo "  env LUNCH_CHOICE=aosp_h3113-userdebug PLATFORM=nile DEVICE=pioneer ./$_shell_script"
+    echo "  env LUNCH_CHOICE=aosp_h3113-userdebug ./$_shell_script"
 }
 
 _pick_pr() {
@@ -115,7 +109,7 @@ _clean()  {
     fi
 
     for _path in \
-        device/sony/$PLATFORM \
+        device/sony/$_platform \
         device/sony/common \
         device/sony/sepolicy \
         kernel/sony/msm-4.14/common-kernel \
@@ -219,11 +213,6 @@ EOF
 }
 
 _make() {
-    set +u # prevent envsetup and lunch from failing because of unset variables
-    . build/envsetup.sh
-    lunch $LUNCH_CHOICE
-    set -u
-
     if [ -n "$_new_branch" ]; then
         make clean
     else
@@ -231,10 +220,10 @@ _make() {
     fi
 
     pushd kernel/sony/msm-4.14/common-kernel
-        _platform_upper=`echo $PLATFORM|tr '[:lower:]' '[:upper:]'`
-        sed -i "s/PLATFORMS=.*/PLATFORMS=$PLATFORM/1" build-kernels-clang.sh
-        sed -i "s/$_platform_upper=.*/$_platform_upper=$DEVICE/1" build-kernels-clang.sh
-        find . -name "*$DEVICE*" -exec rm "{}" \;
+        _platform_upper=`echo $_platform|tr '[:lower:]' '[:upper:]'`
+        sed -i "s/PLATFORMS=.*/PLATFORMS=$_platform/1" build-kernels-clang.sh
+        sed -i "s/$_platform_upper=.*/$_platform_upper=$_device/1" build-kernels-clang.sh
+        find . -name "*$_device*" -exec rm "{}" \;
         bash ./build-kernels-clang.sh
     popd
 
@@ -258,6 +247,9 @@ _switch_branch() {
 # ----------------------------------------------------------------------
 # Main
 # ----------------------------------------------------------------------
+
+cd $SOURCE
+
 declare _shell_script=${0##*/}
 declare _new_branch=""
 declare _keep_local="false"
@@ -293,7 +285,12 @@ if [ -z "$_new_branch" -a "$_keep_local" = "true" ]; then
     echo "For help use $_shell_script -h"
 fi
 
-cd $SOURCE
+set +u # prevent following android calls from failing because of unset variables
+. build/envsetup.sh
+lunch $LUNCH_CHOICE
+declare _device=`get_build_var PRODUCT_DEVICE 2>/dev/null`
+declare _platform=`get_build_var PRODUCT_PLATFORM 2>/dev/null`
+set -u
 
 _current_branch=`cat .repo/manifests/default.xml|grep default\ revision|sed 's#^.*refs/tags/\(.*\)"#\1#1'`
 
