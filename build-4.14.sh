@@ -100,6 +100,10 @@ _clean()  {
         rm -r hardware/qcom/sdm845
     fi
 
+    if [ -d hardware/qcom/sm8150 ]; then
+        rm -r hardware/qcom/sm8150
+    fi
+
     if [ -d device/sony/customization/ ]; then
         rm -r device/sony/customization
     fi
