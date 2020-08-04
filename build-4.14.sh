@@ -44,7 +44,7 @@ _show_help() {
 
 _pick_pr() {
     local _remote=$1
-    local _pr_id=$2
+    local _pr_refspec=$2
     local _commits=${3:-1}
     local _max_commits=${4:-$_commits}
     local _excluded_commits=${5:-}
@@ -52,7 +52,7 @@ _pick_pr() {
     local _count=0
     local _current_commit
 
-    git fetch $_remote pull/$_pr_id/head
+    git fetch $_remote $_pr_refspec
 
     while [ $_index -ge 0 -a $_count -lt $_max_commits ]; do
         _current_commit=`git log --pretty=format:%h FETCH_HEAD~$_index|head -1`
