@@ -361,7 +361,9 @@ _make() {
 
 _build() {
     _clean
-    _patch_manifests
+    if [ $_local_manifests_branch != "android-10_legacy" ]; then
+        _patch_manifests
+    fi
     _init_opengapps
     _repo_update
     _post_update
