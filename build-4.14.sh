@@ -6,7 +6,7 @@ set -eu
 # ----------------------------------------------------------------------
 SOURCE=${SOURCE:-~/android/source}
 APK_DIR=${APK_DIR:-~/android/apk}
-LUNCH_CHOICE=${LUNCH_CHOICE:-aosp_g8441-userdebug}
+LUNCH_CHOICE=
 # ----------------------------------------------------------------------
 
 _show_help() {
@@ -36,7 +36,7 @@ _show_help() {
     echo "  APK_DIR         currently not used"
     echo "                  Default: ~/android/apk"
     echo "  LUNCH_CHOICE    e.g. aosp_h3113-userdebug, aosp_h9436-userdebug,..."
-    echo "                  Default: aosp_g8441-userdebug"
+    echo "                  Default: not set"
     echo ""
     echo "To pass the variables to the script use env, e.g. for pioneer use following command:"
     echo "  env LUNCH_CHOICE=aosp_h3113-userdebug ./$_shell_script"

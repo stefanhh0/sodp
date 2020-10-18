@@ -20,7 +20,7 @@ The script contains following variables that can be set from outside.
 The value after the colon is the default value.
 ```
 SOURCE=${SOURCE:-~/android/source}
-LUNCH_CHOICE=${LUNCH_CHOICE:-aosp_g8441-userdebug}
+LUNCH_CHOICE=
 ```
 
 To build nile, using kernel 4.9 following script call has to be done:
