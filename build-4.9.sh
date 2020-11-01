@@ -126,7 +126,9 @@ _clean()  {
 
 _patch_manifests() {
     pushd .repo/local_manifests
-        rm LA.UM.7.1.r1.xml
+        if [ -f LA.UM.7.1.r1.xml ]; then
+            rm LA.UM.7.1.r1.xml
+        fi
 
         # qcom: Switch camera to new HAL.
         _found_commit=`git log --pretty=format:"%H %s"|grep "qcom: Switch camera to new HAL." |awk '{print $1}'`
